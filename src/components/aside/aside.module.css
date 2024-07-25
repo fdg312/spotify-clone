@@ -1,0 +1,141 @@
+.aside {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	position: fixed;
+	left: 10px;
+	top: 10px;
+	bottom: 10px;
+	height: 100%;
+	width: 20%;
+}
+
+/* svg */
+
+.aside svg {
+	fill: var(--text-grey);
+}
+
+.aside svg:hover {
+	fill: white;
+}
+
+.search_link svg {
+	width: 24px;
+	height: 24px;
+}
+
+.medialibrary_link svg {
+	width: 24px;
+	height: 24px;
+}
+
+/* logo */
+
+.logo {
+	margin-bottom: 24px;
+}
+
+.logo svg {
+	fill: white;
+}
+
+/* links */
+
+.search_link,
+.medialibrary_link {
+	cursor: pointer;
+	display: flex;
+	color: var(--text-grey);
+	align-items: center;
+	font-weight: 600;
+	font-size: 20px;
+	gap: 15px;
+}
+
+/* .main_div */
+
+.main_div {
+	padding: 24px;
+	width: 100%;
+	border-radius: 10px;
+	background-color: var(--bg-dark);
+	margin-bottom: 10px;
+}
+
+.search_link.active,
+.search_link:hover {
+	color: white;
+}
+
+.search_link:hover > svg,
+.search_link.active > svg {
+	fill: white;
+}
+
+/* .medialibrary_div */
+
+.medialibrary_div {
+	padding: 24px;
+	width: 100%;
+	border-radius: 10px;
+	background-color: var(--bg-dark);
+	margin-bottom: 10px;
+}
+
+.medialibrary_link:hover,
+.medialibrary_link.active {
+	color: white;
+}
+
+.medialibrary_link:hover > svg,
+.medialibrary_link.active > svg {
+	fill: white;
+}
+
+/* .createplaylist_div */
+
+.createplaylist_div {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	padding: 16px 20px;
+	width: 100%;
+	border-radius: 10px;
+	background-color: var(--bg-lightdark);
+	margin-bottom: 20px;
+	align-items: flex-start;
+}
+
+.createplaylist_div .text {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.createplaylist_div p {
+	margin: 0;
+}
+
+.createplaylist_div .title {
+	font-weight: 700;
+}
+
+.createplaylist_div .desc {
+	font-size: 15px;
+}
+
+.createplaylist_div .btn {
+	transition: 0.1s;
+	cursor: pointer;
+	background: #fff;
+	color: var(--bg-dark);
+	padding: 5px 15px;
+	border-radius: 30px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.createplaylist_div .btn:hover {
+	transform: scale(1.05);
+}

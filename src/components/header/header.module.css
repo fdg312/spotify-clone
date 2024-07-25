@@ -1,0 +1,35 @@
+.header {
+	float: right;
+	padding: 10px 8px;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 40px;
+	font-size: 18px;
+	font-weight: 600;
+	background-color: var(--bg-dark);
+	width: calc(80% - 15px);
+}
+
+.btn_signup {
+	transition: 0.1s;
+	cursor: pointer;
+	color: var(--text-grey);
+}
+
+.btn_signup:hover {
+	transform: scale(1.05);
+}
+
+.btn_login {
+	transition: 0.1s;
+	cursor: pointer;
+	background: #fff;
+	color: var(--bg-dark);
+	padding: 10px 30px;
+	border-radius: 30px;
+}
+
+.btn_login:hover {
+	transform: scale(1.05);
+}
