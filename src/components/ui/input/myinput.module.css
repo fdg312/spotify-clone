@@ -1,0 +1,41 @@
+.input_div {
+	position: relative;
+}
+
+.input_div svg:first-child {
+	position: absolute;
+	fill: var(--text-grey);
+	left: 15px;
+	top: calc(50% - 9px);
+	width: 18px;
+	height: 18px;
+}
+
+.input_div svg:last-child {
+	position: absolute;
+	fill: var(--text-grey);
+	right: 15px;
+	top: calc(50% - 9px);
+	width: 18px;
+	height: 18px;
+}
+
+.input_div input {
+	background-color: var(--bg-lightdark);
+	width: 400px;
+	padding: 15px 45px;
+	border-radius: 30px;
+	border: none;
+}
+
+.input_div input:focus {
+	outline: 2px solid white;
+}
+
+.input_div input:hover {
+	box-shadow: 0 0 1px 0.2px var(--text-grey);
+}
+
+.input_div input:hover > svg {
+	fill: white;
+}
