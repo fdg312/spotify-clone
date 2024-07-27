@@ -1,0 +1,15 @@
+.btn {
+	background: var(--green);
+	color: black;
+	font-weight: 800;
+	border: none;
+	border-radius: 30px;
+	padding: 15px 0;
+	width: 100%;
+	cursor: pointer;
+}
+
+.btn:hover {
+	transform: scale(1.05);
+	background-color: rgb(19, 226, 91);
+}

@@ -1,0 +1,38 @@
+.input_label {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+	font-weight: 600;
+	font-size: 15px;
+	width: 300px;
+}
+
+.input_label input {
+	background: transparent;
+	border-radius: 2px;
+	padding: 15px;
+	border: 1px solid var(--text-grey);
+}
+
+.input_label input::placeholder {
+	font-size: 16px;
+}
+
+.input_label input:hover {
+	border-color: white;
+}
+
+.input_label input:focus {
+	border: 3px solid white inset;
+}
+
+.input_label svg {
+	fill: var(--text-grey);
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	top: calc(50% + 5px);
+	right: 10px;
+}

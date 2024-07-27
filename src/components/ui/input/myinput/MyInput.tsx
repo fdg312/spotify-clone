@@ -1,4 +1,4 @@
-import { CrossIcon } from '../../../assets/icons/CrossIcon'
+import { CrossIcon } from '../../../../assets/icons/CrossIcon'
 import styles from './myinput.module.css'
 
 interface MyInputProps {

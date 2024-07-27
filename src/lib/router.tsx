@@ -2,6 +2,8 @@ import { createBrowserRouter, Outlet } from 'react-router-dom'
 import Aside from '../components/aside/Aside'
 import Header from '../components/header/Header'
 import Login from '../pages/auth/login/Login'
+import SignUp from '../pages/auth/signup/SignUp'
+import Genre from '../pages/genre/Genre'
 import Home from '../pages/home/Home'
 
 const Layout = () => (
@@ -28,5 +30,13 @@ export const router = createBrowserRouter([
 	{
 		path: '/auth/login',
 		element: <Login />,
+	},
+	{
+		path: '/auth/login',
+		element: <SignUp />,
+	},
+	{
+		path: '/genre/:genreId',
+		element: <Genre />,
 	},
 ])

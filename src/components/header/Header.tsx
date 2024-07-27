@@ -1,21 +1,25 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { SearchInputIcon } from '../../assets/icons/SearchInputIcon'
-import { MyInput } from '../ui/input/MyInput'
+import { MyInput } from '../ui/input/myinput/MyInput'
 import styles from './header.module.css'
 
 const Header = () => {
 	const [inputValue, setInputValue] = useState('')
+	const location = useLocation()
 
 	return (
 		<header className={styles.header}>
-			<MyInput
-				type='text'
-				placeholder='What do you want to play?'
-				value={inputValue}
-				onChange={e => setInputValue(e.target.value)}
-				reset={() => setInputValue('')}
-				svgIcon={<SearchInputIcon />}
-			/>
+			{location.pathname === '/' && (
+				<MyInput
+					type='text'
+					placeholder='What do you want to play?'
+					value={inputValue}
+					onChange={e => setInputValue(e.target.value)}
+					reset={() => setInputValue('')}
+					svgIcon={<SearchInputIcon />}
+				/>
+			)}
 			<div>
 				<span className={styles.btn_signup}>Sign up</span>
 				<span className={styles.btn_login}>Log in</span>
