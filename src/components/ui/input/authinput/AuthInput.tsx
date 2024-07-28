@@ -32,6 +32,11 @@ export const AuthInput: React.FC<AuthInputProps> = ({
 				placeholder={placeholder}
 				value={value}
 				onChange={onChange}
+				pattern={
+					type === 'email' ? '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$' : undefined
+				}
+				maxLength={30}
+				required
 			/>
 			{type === 'password' &&
 				(showPassword ? (

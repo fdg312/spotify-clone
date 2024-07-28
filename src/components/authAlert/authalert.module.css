@@ -1,0 +1,6 @@
+.authalert {
+	position: relative;
+	background: var(--bg-blue);
+	padding: 20px;
+	border-radius: 20px;
+}
