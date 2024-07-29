@@ -1,21 +1,25 @@
-// AlertContext.js
-import React, { createContext, useState, useContext } from 'react'
+import { createContext, useState } from 'react'
 
-const AlertContext = createContext()
-
-export const AlertProvider = ({ children }) => {
-	const [alert, setAlert] = useState(null)
-
-	const showAlert = (message, type = 'info') => {
-		setAlert({ message, type })
-		setTimeout(() => setAlert(null), 5000) // Auto-dismiss after 5 seconds
-	}
-
-	return (
-		<AlertContext.Provider value={{ alert, showAlert }}>
-			{children}
-		</AlertContext.Provider>
-	)
+interface AuthAlertContextProps {
+	alert: boolean
+	setAlert: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const useAlert = () => useContext(AlertContext)
+export const AuthAlertContext = createContext<AuthAlertContextProps>({
+	alert: false,
+	setAlert: () => {},
+})
+
+export const AuthAlertProvider = ({
+	children,
+}: {
+	children: React.ReactNode
+}) => {
+	const [alert, setAlert] = useState(false)
+
+	return (
+		<AuthAlertContext.Provider value={{ alert, setAlert }}>
+			{children}
+		</AuthAlertContext.Provider>
+	)
+}

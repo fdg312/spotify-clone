@@ -1,12 +1,15 @@
+import { useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import { MediaLibraryIcon } from '../../assets/icons/MediaLibraryIcon'
 import { SearchActiveIcon } from '../../assets/icons/SearchActiveIcon'
 import { SearchIcon } from '../../assets/icons/SearchIcon'
 import { SpotifyIcon } from '../../assets/icons/SpotifyIcon'
+import { AuthAlertContext } from '../../providers/AuthAlertProvider'
 import styles from './aside.module.css'
 
 const Aside = () => {
 	const location = useLocation()
+	const { setAlert } = useContext(AuthAlertContext)
 
 	return (
 		<nav className={styles.aside}>
@@ -34,7 +37,9 @@ const Aside = () => {
 					<p className={styles.title}>Create your first playlist</p>
 					<p className={styles.desc}>It`s easy, we`ll help you</p>
 				</div>
-				<button className={styles.btn}>Create playlist</button>
+				<button onClick={() => setAlert(true)} className={styles.btn}>
+					Create playlist
+				</button>
 			</div>
 			<div className='auth-alert'></div>
 		</nav>

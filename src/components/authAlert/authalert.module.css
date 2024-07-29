@@ -1,6 +1,82 @@
 .authalert {
-	position: relative;
+	position: absolute;
 	background: var(--bg-blue);
-	padding: 20px;
-	border-radius: 20px;
+	padding: 15px;
+	border-radius: 10px;
+	width: 300px;
+	z-index: 9999;
+	top: 240px;
+	left: 21%;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.authalert::after {
+	content: '';
+	position: absolute;
+	left: -10px;
+	top: calc(50% - 10px);
+	width: 0;
+	height: 0;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+	border-right: 10px solid var(--bg-blue);
+}
+
+.authalert p {
+	margin: 0;
+}
+
+.text {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.title {
+	font-weight: 700;
+}
+
+.desc {
+	font-size: 15px;
+	/* font-weight: 600; */
+}
+
+.buttons {
+	align-self: flex-end;
+	display: flex;
+	gap: 10px;
+}
+
+.not_now {
+	transition: 0.1s;
+	cursor: pointer;
+	background: transparent;
+	color: var(--text-grey);
+	border: none;
+	font-weight: 600;
+	font-size: 15px;
+}
+
+.not_now:hover {
+	transform: scale(1.05);
+	color: #fff;
+}
+
+.buttons a {
+	text-decoration: none;
+	transition: 0.1s;
+	cursor: pointer;
+	background: #fff;
+	color: var(--bg-dark);
+	padding: 5px 15px;
+	border-radius: 30px;
+	font-weight: 600;
+	font-size: 15px;
+}
+
+.buttons a:hover {
+	background: rgb(244, 244, 244);
+	transform: scale(1.05);
 }

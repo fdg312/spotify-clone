@@ -18,7 +18,7 @@ const PlaylistCard = ({
 				<p className={styles.desc}>{desc}</p>
 			</div>
 			<div className={styles.btn_div}>
-				<PlayButton />
+				<PlayButton color={'green'} />
 			</div>
 		</div>
 	)

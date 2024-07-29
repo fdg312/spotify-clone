@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { SearchInputIcon } from '../../assets/icons/SearchInputIcon'
 import { MyInput } from '../ui/input/myinput/MyInput'
 import styles from './header.module.css'
@@ -21,8 +21,12 @@ const Header = () => {
 				/>
 			)}
 			<div>
-				<span className={styles.btn_signup}>Sign up</span>
-				<span className={styles.btn_login}>Log in</span>
+				<Link to='/auth/signup' className={styles.btn_signup}>
+					Sign up
+				</Link>
+				<Link to='/auth/login' className={styles.btn_login}>
+					Log in
+				</Link>
 			</div>
 		</header>
 	)

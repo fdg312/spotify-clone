@@ -11,6 +11,10 @@
 	width: calc(80% - 15px);
 }
 
+.header a {
+	text-decoration: none;
+}
+
 .header div:last-child {
 	display: flex;
 	align-items: center;
