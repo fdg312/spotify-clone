@@ -9,18 +9,20 @@ const Header = () => {
 	const location = useLocation()
 
 	return (
-		<header className={styles.header}>
-			{location.pathname === '/' && (
-				<MyInput
-					type='text'
-					placeholder='What do you want to play?'
-					value={inputValue}
-					onChange={e => setInputValue(e.target.value)}
-					reset={() => setInputValue('')}
-					svgIcon={<SearchInputIcon />}
-				/>
-			)}
+		<header className={styles.header + ' ' + styles.header}>
 			<div>
+				{location.pathname === '/' && (
+					<MyInput
+						type='text'
+						placeholder='What do you want to play?'
+						value={inputValue}
+						onChange={e => setInputValue(e.target.value)}
+						reset={() => setInputValue('')}
+						svgIcon={<SearchInputIcon />}
+					/>
+				)}
+			</div>
+			<div className={styles.links}>
 				<Link to='/auth/signup' className={styles.btn_signup}>
 					Sign up
 				</Link>

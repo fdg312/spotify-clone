@@ -10,6 +10,9 @@
 }
 
 .card p {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	margin: 0;
 }
 
@@ -29,7 +32,6 @@
 .text {
 	display: flex;
 	flex-direction: column;
-	padding-right: 40px;
 	gap: 3px;
 }
 

@@ -1,19 +1,10 @@
+import { Models, Query } from 'appwrite'
 import { useEffect, useState } from 'react'
 import Albums from '../../components/albums/Albums'
 import CategoryCard from '../../components/categoryCard/CategoryCard'
 import Playlists from '../../components/playlists/Playlists'
-import {
-	COLLECTION_ID_ALBUMS,
-	DATABASE_ID,
-	databases,
-} from '../../lib/appwrite'
+import { COLLECTIONID_ALBUMS, DATABASEID, databases } from '../../lib/appwrite'
 import styles from './home.module.css'
-
-interface IAlbum {
-	title: string
-	author: string
-	imgSrc: string
-}
 
 const Home = () => {
 	const playlists = [
@@ -25,18 +16,17 @@ const Home = () => {
 		},
 	]
 
-	const [albums, setAlbums] = useState<IAlbum[]>([])
+	const [albums, setAlbums] = useState<Models.Document[]>([])
 
 	useEffect(() => {
 		async function fetchData() {
 			const data = await databases.listDocuments(
-				DATABASE_ID,
-				COLLECTION_ID_ALBUMS,
-				[]
+				DATABASEID,
+				COLLECTIONID_ALBUMS,
+				[Query.orderDesc('$createdAt')]
 			)
-			console.log(data, 123321)
 
-			setAlbums(data)
+			setAlbums(data.documents)
 		}
 
 		fetchData()

@@ -1,0 +1,40 @@
+.wrapper {
+}
+
+.upper {
+	padding: 20px;
+	display: flex;
+	gap: 30px;
+}
+
+.img {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+
+.info {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+
+.title {
+	margin: 0;
+	font-size: 80px;
+}
+
+.data {
+	display: flex;
+	gap: 3px;
+}
+
+.author {
+	color: white;
+	font-weight: 600;
+	text-decoration: underline;
+}
+
+.author:hover {
+	text-decoration: none;
+}

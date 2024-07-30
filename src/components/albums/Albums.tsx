@@ -1,13 +1,10 @@
+import { Models } from 'appwrite'
 import AlbumCard from '../albumCard/AlbumCard'
 import styles from './albums.module.css'
 
 interface AlbumsProps {
 	title: string
-	albums: Array<{
-		title: string
-		author: string
-		imgSrc: string
-	}>
+	albums: Models.Document[]
 }
 
 const Albums = ({ title, albums }: AlbumsProps) => {
@@ -18,8 +15,9 @@ const Albums = ({ title, albums }: AlbumsProps) => {
 				{albums.map(album => (
 					<div key={album.title}>
 						<AlbumCard
+							id={album.$id}
 							title={album.title}
-							author={album.author}
+							author={album.author.name}
 							src={album.imgSrc}
 						/>
 					</div>

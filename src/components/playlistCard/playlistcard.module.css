@@ -13,6 +13,12 @@
 	margin: 0;
 }
 
+.title {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
 .desc {
 	color: var(--text-grey);
 	display: -webkit-box;
@@ -34,7 +40,6 @@
 .text {
 	display: flex;
 	flex-direction: column;
-	padding-right: 40px;
 	gap: 3px;
 }
 
