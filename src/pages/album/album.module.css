@@ -38,3 +38,47 @@
 .author:hover {
 	text-decoration: none;
 }
+
+.layout {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 30px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid var(--bg-lightdark);
+	margin: 20px 15px;
+}
+
+.leftlayout {
+	align-items: center;
+	display: flex;
+	gap: 30px;
+	font-size: 18px;
+	color: var(--text-grey);
+}
+
+.rightlayout svg {
+	width: 18px;
+	height: 18px;
+	fill: var(--text-grey);
+}
+
+.buttons {
+	display: flex;
+	align-items: center;
+	gap: 30px;
+	padding: 25px 30px;
+}
+
+.dots {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	width: 40px;
+	height: 40px;
+	fill: var(--text-grey);
+}
+
+.dots:hover {
+	fill: white;
+}

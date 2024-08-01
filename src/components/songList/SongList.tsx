@@ -1,15 +1,29 @@
-import { Models } from 'appwrite'
-import { useContext } from 'react'
-import { SongContext } from '../../providers/SongProvider'
+import SongItem from '../songItem/SongItem'
+import styles from './songlist.module.css'
 
-const SongList = ({ songs }: { songs: Models.Document[] }) => {
-	const { currentSong } = useContext(SongContext)
+export interface SongListProps {
+	title: string
+	author: string
+	duration: number
+	srcImg: string
+	id: number
+	path: string
+}
+
+const SongList = ({ songs }: { songs: SongListProps[] }) => {
 	console.log(songs)
 
 	return (
-		<div>
-			{songs.map(song => (
-				<div key={song.$id}>{song.title}</div>
+		<div className={styles.songlist}>
+			{songs.map((song: SongListProps, id: number) => (
+				<SongItem
+					key={id}
+					title={song.title}
+					author={song.author}
+					duration={song.duration}
+					url={song.path}
+					id={id + 1}
+				/>
 			))}
 		</div>
 	)

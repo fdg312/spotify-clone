@@ -1,19 +1,50 @@
 import { Models } from 'appwrite'
 import { useColor } from 'color-thief-react'
-import { Link, LoaderFunctionArgs, useLoaderData } from 'react-router-dom'
-import SongList from '../../components/songList/SongList'
+import { useState } from 'react'
+import {
+	Link,
+	LoaderFunctionArgs,
+	useLoaderData,
+	useNavigation,
+} from 'react-router-dom'
+import { ClockIcon } from '../../assets/icons/ClockIcon'
+import { DotsIcon } from '../../assets/icons/DotsIcon'
+import SongList, { SongListProps } from '../../components/songList/SongList'
+import { PlayButton } from '../../components/ui/button/playButton/PlayButton'
 import { databases } from '../../lib/appwrite'
+import { IAlbum } from '../../types/Album'
+import { ISong } from '../../types/Song'
 import styles from './album.module.css'
 
 export const Album = () => {
-	const album = useLoaderData() as Models.Document
-	const { data } = useColor(album.imgSrc, 'hex', { crossOrigin: 'quality' })
-	console.log(typeof album.tracks)
+	const album = useLoaderData() as IAlbum
+	const { data } = useColor(album.imgSrc, 'rgbArray', {
+		crossOrigin: 'quality',
+	})
+	const navigation = useNavigation()
+	console.log(navigation.state)
+
+	const [songs] = useState<SongListProps[]>(
+		album.tracks.map((song: ISong) => ({
+			title: song.title,
+			author: song.author.name,
+			duration: song.duration,
+			srcImg: song.url,
+			id: song.id,
+			path: song.path,
+		}))
+	)
+	console.log(data)
+	console.log(
+		`linear-gradient(to bottom, rgb(${data?.[0]}, ${data?.[1]}, ${data?.[2]}, #fff))`
+	)
 
 	return (
 		<div className={styles.wrapper}>
 			<div
-				style={{ background: `linear-gradient(to bottom, ${data}, #56391c)` }}
+				style={{
+					background: `linear-gradient(to bottom, rgb(${data?.[0]}, ${data?.[1]}, ${data?.[2]}), rgba(${data?.[0]}, ${data?.[1]}, ${data?.[2]}, 0.55))`,
+				}}
 				className={styles.upper}
 			>
 				<div className={styles.img}>
@@ -35,8 +66,28 @@ export const Album = () => {
 					</div>
 				</div>
 			</div>
-			<div className='downer'>
-				<SongList songs={album.tracks} />
+			<div
+				style={{
+					background: `linear-gradient(to bottom, rgba(${data?.[0]}, ${data?.[1]}, ${data?.[2]}, 0.55), rgba(${data?.[0]}, ${data?.[1]}, ${data?.[2]}, 0.1)) 0% 0% / 100% 60% no-repeat`,
+				}}
+				className={styles.downer}
+			>
+				<div className={styles.buttons}>
+					<PlayButton color='green' />
+					<div className={styles.dots}>
+						<DotsIcon />
+					</div>
+				</div>
+				<div className={styles.layout}>
+					<div className={styles.leftlayout}>
+						<span className={styles.id}>#</span>
+						<span className={styles.leftlayout}>Title</span>
+					</div>
+					<div className={styles.rightlayout}>
+						<ClockIcon />
+					</div>
+				</div>
+				<SongList songs={songs} />
 			</div>
 		</div>
 	)

@@ -14,16 +14,18 @@ const AlbumCard = ({
 	id: string
 }) => {
 	return (
-		<Link to={`/album/${id}`}>
-			<div className={styles.card}>
-				<img src={src} alt={title} />
-				<div className={styles.text}>
-					<p className={styles.title}>{title}</p>
-					<p className={styles.author}>{author}</p>
-				</div>
-				<div className={styles.btn_div}>
-					<PlayButton color={'green'} />
-				</div>
+		<Link
+			// style={{ textDecoration: 'none', color: 'inherit' }}
+			className={styles.card}
+			to={`/album/${id}`}
+		>
+			<img src={src} alt={title} />
+			<div className={styles.text}>
+				<p className={styles.title}>{title}</p>
+				<p className={styles.author}>{author}</p>
+			</div>
+			<div className={styles.btn_div}>
+				<PlayButton color={'green'} />
 			</div>
 		</Link>
 	)
