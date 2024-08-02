@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { MediaLibraryIcon } from '../../assets/icons/MediaLibraryIcon'
 import { SearchActiveIcon } from '../../assets/icons/SearchActiveIcon'
 import { SearchIcon } from '../../assets/icons/SearchIcon'
@@ -14,9 +14,9 @@ const Aside = () => {
 	return (
 		<nav className={styles.aside}>
 			<div className={styles.main_div}>
-				<div className={styles.logo}>
+				<Link to='/' className={styles.logo}>
 					<SpotifyIcon />
-				</div>
+				</Link>
 				<div
 					className={`${styles.search_link} ${
 						location.pathname === '/' ? styles.active : ''

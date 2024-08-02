@@ -1,6 +1,8 @@
 import { useContext, useState } from 'react'
+import { PauseIcon } from '../../assets/icons/PauseIcon'
 import { PlayIcon } from '../../assets/icons/PlayIcon'
 import { AudioContext } from '../../providers/AudioProvider'
+import { secondsToTime } from '../../utils/secondsToTime'
 import styles from './songitem.module.css'
 
 interface ISong {
@@ -9,42 +11,78 @@ interface ISong {
 	duration: number
 	url: string
 	id: number
-	srcImg?: string
+	srcImg: string
 }
 
-const SongItem = ({ title, author, duration, url, id }: ISong) => {
+const SongItem = ({ title, author, duration, url, id, srcImg }: ISong) => {
 	const [isHover, setIsHover] = useState(false)
-	const { selectAudio } = useContext(AudioContext)
-
-	function secondsToTime(time: number) {
-		const m = Math.floor((time % 3600) / 60)
-				.toString()
-				.padStart(2, '0'),
-			s = Math.floor(time % 60)
-				.toString()
-				.padStart(2, '0')
-
-		return m + ':' + s
-	}
+	const { selectAudio, currentSong, pauseAudio, isPlaying } =
+		useContext(AudioContext)
 
 	return (
 		<div
 			onMouseEnter={() => setIsHover(true)}
 			onMouseLeave={() => setIsHover(false)}
+			onDoubleClick={() =>
+				selectAudio({
+					title,
+					author,
+					src: url,
+					duration,
+					index: id,
+					srcImg,
+				})
+			}
 			className={styles.wrapper}
 		>
 			<div className={styles.main}>
-				{isHover ? (
+				{isHover && (!isPlaying || currentSong.index !== id) ? (
 					<div
-						onClick={() => selectAudio({ title, author, src: url, duration })}
+						onClick={() =>
+							selectAudio({
+								title,
+								author,
+								src: url,
+								duration,
+								index: id,
+								srcImg,
+							})
+						}
 					>
 						<PlayIcon />
 					</div>
+				) : currentSong.index === id && isPlaying ? (
+					currentSong.index === id &&
+					isPlaying && (
+						<div
+							className={
+								(currentSong.index === id && styles.active) || undefined
+							}
+							onClick={() => {
+								setIsHover(false)
+								pauseAudio()
+							}}
+						>
+							<PauseIcon />
+						</div>
+					)
 				) : (
-					<span className={styles.id}>{id}</span>
+					<span
+						className={
+							styles.id + ' ' + (currentSong.index === id && styles.active)
+						}
+					>
+						{id}
+					</span>
 				)}
 				<div className={styles.text}>
-					<h3 className={styles.title}>{title}</h3>
+					<h3
+						className={
+							styles.title + ' ' + (currentSong.index === id && styles.active)
+						}
+					>
+						{title}
+					</h3>
 					<span className={styles.author}>{author}</span>
 				</div>
 			</div>

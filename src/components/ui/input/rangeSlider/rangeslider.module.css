@@ -1,0 +1,26 @@
+.slider {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	width: 100%;
+	height: 5px;
+	border-radius: 50em;
+	outline: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.slider.active::-webkit-slider-thumb {
+	background: white;
+}

@@ -51,3 +51,11 @@
 .duration {
 	color: var(--text-grey);
 }
+
+.active {
+	color: var(--green);
+}
+
+.active svg {
+	fill: var(--green);
+}

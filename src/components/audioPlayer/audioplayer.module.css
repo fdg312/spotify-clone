@@ -1,6 +1,125 @@
 .audioplayer {
+	margin-top: 1000px;
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	background: #000;
+	padding: 0 20px;
+}
+
+.wrapper {
+	display: flex;
+	justify-content: space-between;
+}
+
+.info {
+	width: 20%;
+	display: flex;
+	gap: 20px;
+	align-items: center;
+}
+
+.img img {
+	width: 60px;
+	height: 60px;
+}
+
+.text {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.author {
+	color: var(--text-grey);
+	font-size: 15px;
+}
+
+.author:hover {
+	color: white;
+	text-decoration: underline;
+}
+
+.controls {
+	display: flex;
+	align-items: center;
+	gap: 40px;
+}
+
+.duration {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.nextbutton {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+.nextbutton svg {
+	width: 20px;
+	height: 20px;
+	fill: var(--text-grey);
+}
+
+.nextbutton svg:hover {
+	fill: white;
+}
+
+.prevbutton {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+.prevbutton svg {
+	width: 20px;
+	height: 20px;
+	fill: var(--text-grey);
+}
+
+.prevbutton svg:hover {
+	fill: white;
+}
+
+.playbutton {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.playbutton button {
+	width: 40px;
+	height: 40px;
+}
+
+.volume {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.volume svg:hover {
+	fill: white;
+}
+
+.volume svg {
+	width: 20px;
+	height: 20px;
+	fill: var(--text-grey);
+}
+
+.speaker {
+	display: flex;
+	align-items: center;
+}
+
+.now_time {
+	color: var(--text-grey);
+}
+
+.all_time {
+	color: var(--text-grey);
 }

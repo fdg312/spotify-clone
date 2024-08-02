@@ -13,25 +13,37 @@ import {
 	DATABASEID,
 	databases,
 } from '../../lib/appwrite'
+import { useAudio } from '../../providers/AudioProvider'
 import { IPlaylist } from '../../types/Playlist'
 import { ITrack } from '../../types/Track'
 import styles from './playlist.module.css'
 
 const Playlist = () => {
 	const playlist = useLoaderData() as IPlaylist
+	const { currentSong, isPlaying } = useAudio()
+	const [playingStatus, setPlayingStatus] = useState(false)
+
+	useEffect(() => {
+		const status =
+			isPlaying &&
+			!!playlist.tracks.filter((song: ITrack) => {
+				return song.path === currentSong.src
+			}).length
+
+		setPlayingStatus(status)
+	}, [])
 
 	const { data } = useColor(playlist.imgSrc, 'rgbArray', {
 		crossOrigin: 'quality',
 	})
 	const [isDropdown, setIsDropwdown] = useState(false)
 	const dropdownRef = useRef<HTMLDivElement>(null)
-	console.log(playlist)
 
 	const [songs] = useState<SongListProps[]>(
 		playlist.tracks.map((song: ITrack) => ({
 			title: song.title,
 			duration: song.duration,
-			srcImg: song.url,
+			srcImg: song.album.imgSrc,
 			id: song.id,
 			path: song.path,
 			author: song.author.name,
@@ -82,7 +94,7 @@ const Playlist = () => {
 				className={styles.downer}
 			>
 				<div className={styles.buttons}>
-					<PlayButton color='green' />
+					<PlayButton playingStatus={playingStatus} color='green' />
 					<div
 						onClick={() => setIsDropwdown(!isDropdown)}
 						className={styles.dots}

@@ -13,10 +13,7 @@ export const COLLECTIONID_TRACKS = import.meta.env
 
 export const client = new Client()
 
-client
-	.setEndpoint('https://cloud.appwrite.io/v1')
-	.setProject(PROJECTID).headers['X-Appwrite-Key'] =
-	import.meta.env.VITE_APPWRITE_APIKEY
+client.setEndpoint('https://cloud.appwrite.io/v1').setProject(PROJECTID)
 
 export const databases = new Databases(client)
 export const account = new Account(client)

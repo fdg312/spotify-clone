@@ -1,4 +1,5 @@
 import { Models } from 'appwrite'
+import { IAlbum } from './Album'
 import { IAuthor } from './Author'
 
 export interface ITrack extends Models.Document {
@@ -6,4 +7,5 @@ export interface ITrack extends Models.Document {
 	path: string
 	duration: number
 	author: IAuthor
+	album: IAlbum
 }

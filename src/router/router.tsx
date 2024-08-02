@@ -9,24 +9,30 @@ import SignUp from '../pages/auth/signup/SignUp'
 import Genre from '../pages/genre/Genre'
 import Home from '../pages/home/Home'
 import Playlist, { playlistLoader } from '../pages/playlist/Playlist'
+import { useAudio } from '../providers/AudioProvider'
 import Providers from '../providers/Provider'
 
-const RootLayout = () => (
-	<Providers>
-		<Aside />
-		<Header />
-		<AuthAlert />
-		<main
-			style={{
-				width: 'calc(80% - 15px)',
-				float: 'right',
-			}}
-		>
-			<Outlet />
-		</main>
-		<AudioPlayer />
-	</Providers>
-)
+const RootLayout = () => {
+	const { currentSong } = useAudio()
+
+	return (
+		<Providers>
+			<Aside />
+			<Header />
+			<AuthAlert />
+			<main
+				style={{
+					width: 'calc(80% - 15px)',
+					float: 'right',
+					marginBottom: currentSong.title.length ? '80px' : '0',
+				}}
+			>
+				<Outlet />
+			</main>
+			<AudioPlayer />
+		</Providers>
+	)
+}
 
 export const router = createBrowserRouter([
 	{
@@ -35,7 +41,11 @@ export const router = createBrowserRouter([
 		children: [
 			{
 				path: '/',
-				element: <Home />,
+				element: (
+					<div style={{ height: '100%', overflowY: 'auto', flexGrow: 1 }}>
+						<Home />
+					</div>
+				),
 			},
 			{
 				path: '/album/:albumId',
