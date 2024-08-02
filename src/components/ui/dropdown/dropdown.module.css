@@ -1,0 +1,29 @@
+.dropdown {
+	padding: 5px;
+	background: var(--bg-lightdark);
+	border-radius: 3px;
+}
+
+.elements {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.element {
+	padding: 5px 10px;
+	display: flex;
+	align-items: center;
+	text-wrap: nowrap;
+	gap: 15px;
+}
+
+.element:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.element svg {
+	width: 18px;
+	height: 18px;
+	fill: var(--text-grey);
+}

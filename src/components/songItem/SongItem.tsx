@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { PlayIcon } from '../../assets/icons/PlayIcon'
-import { SongContext } from '../../providers/SongProvider'
+import { AudioContext } from '../../providers/AudioProvider'
 import styles from './songitem.module.css'
 
 interface ISong {
@@ -14,7 +14,7 @@ interface ISong {
 
 const SongItem = ({ title, author, duration, url, id }: ISong) => {
 	const [isHover, setIsHover] = useState(false)
-	const { setCurrentSong } = useContext(SongContext)
+	const { selectAudio } = useContext(AudioContext)
 
 	function secondsToTime(time: number) {
 		const m = Math.floor((time % 3600) / 60)
@@ -35,7 +35,9 @@ const SongItem = ({ title, author, duration, url, id }: ISong) => {
 		>
 			<div className={styles.main}>
 				{isHover ? (
-					<div onClick={() => setCurrentSong({ title, author, url, duration })}>
+					<div
+						onClick={() => selectAudio({ title, author, src: url, duration })}
+					>
 						<PlayIcon />
 					</div>
 				) : (

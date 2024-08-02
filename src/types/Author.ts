@@ -1,5 +1,5 @@
 import { Models } from 'appwrite'
-import { ISong } from './Song'
+import { ISong } from './Track'
 
 export interface IAuthor extends Models.Document {
 	name: string

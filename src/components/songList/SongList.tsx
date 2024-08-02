@@ -11,15 +11,13 @@ export interface SongListProps {
 }
 
 const SongList = ({ songs }: { songs: SongListProps[] }) => {
-	console.log(songs)
-
 	return (
 		<div className={styles.songlist}>
 			{songs.map((song: SongListProps, id: number) => (
 				<SongItem
 					key={id}
 					title={song.title}
-					author={song.author}
+					author={song.author ?? ''}
 					duration={song.duration}
 					url={song.path}
 					id={id + 1}

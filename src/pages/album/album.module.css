@@ -71,6 +71,7 @@
 }
 
 .dots {
+	position: relative;
 	cursor: pointer;
 	display: flex;
 	align-items: center;
@@ -79,6 +80,11 @@
 	fill: var(--text-grey);
 }
 
-.dots:hover {
+.dots svg:hover {
 	fill: white;
+}
+
+.dropdown {
+	position: absolute;
+	top: 50px;
 }

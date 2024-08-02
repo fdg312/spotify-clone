@@ -1,13 +1,10 @@
+import { IPlaylist } from '../../types/Playlist'
 import PlaylistCard from '../playlistCard/PlaylistCard'
 import styles from './playlists.module.css'
 
 interface PlaylistsProps {
 	title: string
-	playlists: Array<{
-		title: string
-		desc: string
-		imgSrc: string
-	}>
+	playlists: IPlaylist[]
 }
 
 const Playlists = ({ title, playlists }: PlaylistsProps) => {
@@ -18,8 +15,9 @@ const Playlists = ({ title, playlists }: PlaylistsProps) => {
 				{playlists.map(playlist => (
 					<div key={playlist.title}>
 						<PlaylistCard
+							id={playlist.$id}
 							title={playlist.title}
-							desc={playlist.desc}
+							desc={playlist.description}
 							src={playlist.imgSrc}
 						/>
 					</div>

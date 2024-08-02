@@ -1,32 +1,46 @@
-import { Models, Query } from 'appwrite'
+import { Query } from 'appwrite'
 import { useEffect, useState } from 'react'
 import Albums from '../../components/albums/Albums'
 import CategoryCard from '../../components/categoryCard/CategoryCard'
 import Playlists from '../../components/playlists/Playlists'
-import { COLLECTIONID_ALBUMS, DATABASEID, databases } from '../../lib/appwrite'
+import {
+	COLLECTIONID_ALBUMS,
+	COLLECTIONID_PLAYLISTS,
+	DATABASEID,
+	databases,
+} from '../../lib/appwrite'
+import { IAlbum } from '../../types/Album'
+import { IPlaylist } from '../../types/Playlist'
 import styles from './home.module.css'
 
 const Home = () => {
-	const playlists = [
-		{
-			title: 'Top 10 in the world',
-			desc: 'This is the best playlist in the world',
-			imgSrc:
-				'https://i.scdn.co/image/ab67706f000000028b7b685e7ef24f048048ba3e',
-		},
-	]
-
-	const [albums, setAlbums] = useState<Models.Document[]>([])
+	// const playlists = [
+	// 	{
+	// 		title: 'Top 10 in the world',
+	// 		desc: 'This is the best playlist in the world',
+	// 		imgSrc:
+	// 			'https://i.scdn.co/image/ab67706f000000028b7b685e7ef24f048048ba3e',
+	// 	},
+	// ]
+	const [playlists, setPlaylists] = useState<IPlaylist[]>([])
+	const [albums, setAlbums] = useState<IAlbum[]>([])
 
 	useEffect(() => {
 		async function fetchData() {
-			const data = await databases.listDocuments(
+			const albums_data = await databases.listDocuments<IAlbum>(
 				DATABASEID,
 				COLLECTIONID_ALBUMS,
 				[Query.orderDesc('$createdAt')]
 			)
 
-			setAlbums(data.documents)
+			const playlists_data = await databases.listDocuments<IPlaylist>(
+				DATABASEID,
+				COLLECTIONID_PLAYLISTS,
+				[Query.orderDesc('$createdAt')]
+			)
+
+			setPlaylists(playlists_data.documents)
+			setAlbums(albums_data.documents)
 		}
 
 		fetchData()

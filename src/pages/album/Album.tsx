@@ -1,19 +1,16 @@
 import { Models } from 'appwrite'
 import { useColor } from 'color-thief-react'
-import { useState } from 'react'
-import {
-	Link,
-	LoaderFunctionArgs,
-	useLoaderData,
-	useNavigation,
-} from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, LoaderFunctionArgs, useLoaderData } from 'react-router-dom'
 import { ClockIcon } from '../../assets/icons/ClockIcon'
 import { DotsIcon } from '../../assets/icons/DotsIcon'
 import SongList, { SongListProps } from '../../components/songList/SongList'
 import { PlayButton } from '../../components/ui/button/playButton/PlayButton'
-import { databases } from '../../lib/appwrite'
+import { Dropdown } from '../../components/ui/dropdown/Dropdown'
+import { albumDropdownElements } from '../../constants/dropdown'
+import { COLLECTIONID_ALBUMS, DATABASEID, databases } from '../../lib/appwrite'
 import { IAlbum } from '../../types/Album'
-import { ISong } from '../../types/Song'
+import { ITrack } from '../../types/Track'
 import styles from './album.module.css'
 
 export const Album = () => {
@@ -21,11 +18,10 @@ export const Album = () => {
 	const { data } = useColor(album.imgSrc, 'rgbArray', {
 		crossOrigin: 'quality',
 	})
-	const navigation = useNavigation()
-	console.log(navigation.state)
-
+	const [isDropdown, setIsDropwdown] = useState(false)
+	const dropdownRef = useRef<HTMLDivElement>(null)
 	const [songs] = useState<SongListProps[]>(
-		album.tracks.map((song: ISong) => ({
+		album.tracks.map((song: ITrack) => ({
 			title: song.title,
 			author: song.author.name,
 			duration: song.duration,
@@ -34,10 +30,22 @@ export const Album = () => {
 			path: song.path,
 		}))
 	)
-	console.log(data)
-	console.log(
-		`linear-gradient(to bottom, rgb(${data?.[0]}, ${data?.[1]}, ${data?.[2]}, #fff))`
-	)
+
+	const handleClickOutside = (event: MouseEvent) => {
+		if (
+			dropdownRef.current &&
+			!dropdownRef.current.contains(event.target as Node)
+		) {
+			setIsDropwdown(false)
+		}
+	}
+
+	useEffect(() => {
+		document.addEventListener('mousedown', handleClickOutside)
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside)
+		}
+	}, [isDropdown])
 
 	return (
 		<div className={styles.wrapper}>
@@ -74,8 +82,14 @@ export const Album = () => {
 			>
 				<div className={styles.buttons}>
 					<PlayButton color='green' />
-					<div className={styles.dots}>
+					<div
+						onClick={() => setIsDropwdown(!isDropdown)}
+						className={styles.dots}
+					>
 						<DotsIcon />
+						<div className={styles.dropdown} ref={dropdownRef}>
+							<Dropdown isShow={isDropdown} elements={albumDropdownElements} />
+						</div>
 					</div>
 				</div>
 				<div className={styles.layout}>
@@ -103,8 +117,8 @@ export const albumLoader = async ({
 	}
 
 	const document = await databases.getDocument(
-		import.meta.env.VITE_APPWRITE_DATABASEID,
-		import.meta.env.VITE_APPWRITE_COLLECTIONID_ALBUMS,
+		DATABASEID,
+		COLLECTIONID_ALBUMS,
 		albumId
 	)
 
