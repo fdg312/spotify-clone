@@ -1,3 +1,4 @@
+import { Provider } from 'react-redux'
 import { createBrowserRouter, Outlet } from 'react-router-dom'
 import Aside from '../components/aside/Aside'
 import AudioPlayer from '../components/audioPlayer/AudioPlayer'
@@ -11,6 +12,7 @@ import Home from '../pages/home/Home'
 import Playlist, { playlistLoader } from '../pages/playlist/Playlist'
 import { useAudio } from '../providers/AudioProvider'
 import Providers from '../providers/Provider'
+import { store } from '../store/store'
 
 const RootLayout = () => {
 	const { currentSong } = useAudio()
@@ -65,10 +67,18 @@ export const router = createBrowserRouter([
 	},
 	{
 		path: '/auth/login',
-		element: <Login />,
+		element: (
+			<Provider store={store}>
+				<Login />
+			</Provider>
+		),
 	},
 	{
 		path: '/auth/signup',
-		element: <SignUp />,
+		element: (
+			<Provider store={store}>
+				<SignUp />
+			</Provider>
+		),
 	},
 ])

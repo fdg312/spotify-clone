@@ -1,35 +1,20 @@
-import { ID } from 'appwrite'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SpotifySmallIcon } from '../../../assets/icons/SpotifySmallIcon'
 import { AuthButton } from '../../../components/ui/button/authButton/AuthButton'
 import { AuthInput } from '../../../components/ui/input/authinput/AuthInput'
-import { account } from '../../../lib/appwrite'
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
+import { register } from '../../../store/auth/authActions'
 import styles from './signup.module.css'
 
 const SignUp = () => {
 	const [form, setForm] = useState({ email: '', password: '', username: '' })
-
-	const register = async ({
-		email,
-		password,
-		username,
-	}: {
-		email: string
-		password: string
-		username: string
-	}) => {
-		await account.create(ID.unique(), email, password, username)
-		await account.createEmailPasswordSession(email, password)
-
-		console.log(await account.get())
-	}
+	const { loading } = useAppSelector(state => state.auth)
+	const dispatch = useAppDispatch()
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		console.log(form)
-
-		register(form)
+		dispatch(register(form))
 	}
 
 	return (
@@ -59,7 +44,7 @@ const SignUp = () => {
 							placeholder='Password'
 						/>
 					</div>
-					<AuthButton>Log in</AuthButton>
+					<AuthButton disabled={loading}>Sign up</AuthButton>
 				</form>
 				<hr />
 				<div className={styles.not_account}>

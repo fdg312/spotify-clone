@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SpotifySmallIcon } from '../../../assets/icons/SpotifySmallIcon'
 import AuthForm from '../../../components/form/authForm/AuthForm'
+import { useAppDispatch } from '../../../hooks/reduxHooks'
+import { login } from '../../../store/auth/authActions'
 import styles from './login.module.css'
 
 const Login = () => {
@@ -9,6 +11,22 @@ const Login = () => {
 		email: { value: '', placeholder: 'Email or username', type: 'email' },
 		password: { value: '', placeholder: 'Password', type: 'password' },
 	})
+	const dispatch = useAppDispatch()
+
+	const onSubmit = (e: FormEvent) => {
+		e.preventDefault()
+		console.log({
+			email: form.email.value,
+			password: form.password.value,
+		})
+
+		dispatch(
+			login({
+				email: form.email.value,
+				password: form.password.value,
+			})
+		)
+	}
 
 	return (
 		<main className={styles.main}>
@@ -17,7 +35,7 @@ const Login = () => {
 				<h1 className={styles.title}>Login in Spotify</h1>
 				<hr />
 				<AuthForm
-					onSubmit={() => {}}
+					onSubmit={onSubmit}
 					title='Log in'
 					values={form}
 					setForm={setForm}

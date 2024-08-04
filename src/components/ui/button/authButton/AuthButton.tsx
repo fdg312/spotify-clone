@@ -2,11 +2,15 @@ import styles from './authbutton.module.css'
 
 interface AuthButtonProps {
 	children: React.ReactNode
+	disabled?: boolean
 }
 
-export const AuthButton: React.FC<AuthButtonProps> = ({ children }) => {
+export const AuthButton: React.FC<AuthButtonProps> = ({
+	children,
+	disabled = false,
+}) => {
 	return (
-		<button type='submit' className={styles.btn}>
+		<button disabled={disabled} type='submit' className={styles.btn}>
 			{children}
 		</button>
 	)
