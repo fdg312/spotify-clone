@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { SpotifySmallIcon } from '../../../assets/icons/SpotifySmallIcon'
 import { AuthButton } from '../../../components/ui/button/authButton/AuthButton'
 import { AuthInput } from '../../../components/ui/input/authinput/AuthInput'
@@ -9,12 +9,23 @@ import styles from './signup.module.css'
 
 const SignUp = () => {
 	const [form, setForm] = useState({ email: '', password: '', username: '' })
-	const { loading } = useAppSelector(state => state.auth)
+	const { loading, error } = useAppSelector(state => state.auth)
 	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		if (error !== null && !loading) {
+			navigate('/')
+		}
+	}, [error, loading, navigate])
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		dispatch(register(form))
+		if (error !== null) {
+			return
+		}
+		navigate('/')
 	}
 
 	return (

@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { SpotifySmallIcon } from '../../../assets/icons/SpotifySmallIcon'
 import AuthForm from '../../../components/form/authForm/AuthForm'
 import { useAppDispatch } from '../../../hooks/reduxHooks'
@@ -12,13 +12,10 @@ const Login = () => {
 		password: { value: '', placeholder: 'Password', type: 'password' },
 	})
 	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 
 	const onSubmit = (e: FormEvent) => {
 		e.preventDefault()
-		console.log({
-			email: form.email.value,
-			password: form.password.value,
-		})
 
 		dispatch(
 			login({
@@ -26,6 +23,7 @@ const Login = () => {
 				password: form.password.value,
 			})
 		)
+		navigate('/')
 	}
 
 	return (

@@ -1,6 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ID } from 'appwrite'
-import { account } from '../../lib/appwrite'
+import { ID, Permission, Role } from 'appwrite'
+import {
+	account,
+	COLLECTIONID_ACCOUNTS,
+	DATABASEID,
+	databases,
+} from '../../lib/appwrite'
+import { getRandomColor } from '../../utils/getRandomColor'
 
 interface RegisterPayload {
 	username: string
@@ -17,7 +23,26 @@ export const register = createAsyncThunk(
 		try {
 			await account.create(ID.unique(), email, password, username)
 			await account.createEmailPasswordSession(email, password)
-			return account.get()
+			const newUser = await account.get()
+			console.log(newUser)
+			console.log(await account.getSession('current'))
+
+			await databases.createDocument(
+				DATABASEID,
+				COLLECTIONID_ACCOUNTS,
+				ID.unique(),
+				{
+					userId: newUser.$id,
+					avatarColor: getRandomColor(),
+				},
+				[
+					Permission.read(Role.user(newUser.$id)),
+					Permission.update(Role.user(newUser.$id)),
+					Permission.delete(Role.user(newUser.$id)),
+				]
+			)
+
+			return newUser
 		} catch (error) {
 			return rejectWithValue(error)
 		}
@@ -34,18 +59,18 @@ export const login = createAsyncThunk(
 	async ({ email, password }: LoginPayload, { rejectWithValue }) => {
 		try {
 			await account.createEmailPasswordSession(email, password)
-			return account.get()
+			return await account.get()
 		} catch (error) {
 			return rejectWithValue(error)
 		}
 	}
 )
 
-export const checkAuth = createAsyncThunk(
-	'auth/checkAuth',
+export const getCurrent = createAsyncThunk(
+	'auth/getCurrent',
 	async (_, { rejectWithValue }) => {
 		try {
-			return account.get()
+			return await account.get()
 		} catch (error) {
 			return rejectWithValue(error)
 		}

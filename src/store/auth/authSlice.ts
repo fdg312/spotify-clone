@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { Models } from 'appwrite'
-import { checkAuth, login, register } from './authActions'
+import { getCurrent, login, register } from './authActions'
 
 export interface AuthState {
 	user: Models.User<Models.Preferences> | null
@@ -26,6 +26,7 @@ const authSlice = createSlice({
 			.addCase(register.fulfilled, (state, action) => {
 				state.user = action.payload
 				state.loading = false
+				state.error = null
 			})
 			.addCase(register.rejected, (state, action) => {
 				state.loading = false
@@ -37,19 +38,21 @@ const authSlice = createSlice({
 			.addCase(login.fulfilled, (state, action) => {
 				state.user = action.payload
 				state.loading = false
+				state.error = null
 			})
 			.addCase(login.rejected, (state, action) => {
 				state.loading = false
 				state.error = action.payload as string
 			})
-			.addCase(checkAuth.pending, state => {
+			.addCase(getCurrent.pending, state => {
 				state.loading = true
 			})
-			.addCase(checkAuth.fulfilled, (state, action) => {
+			.addCase(getCurrent.fulfilled, (state, action) => {
 				state.user = action.payload
 				state.loading = false
+				state.error = null
 			})
-			.addCase(checkAuth.rejected, (state, action) => {
+			.addCase(getCurrent.rejected, (state, action) => {
 				state.loading = false
 				state.error = action.payload as string
 			})

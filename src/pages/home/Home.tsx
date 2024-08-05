@@ -14,14 +14,6 @@ import { IPlaylist } from '../../types/Playlist'
 import styles from './home.module.css'
 
 const Home = () => {
-	// const playlists = [
-	// 	{
-	// 		title: 'Top 10 in the world',
-	// 		desc: 'This is the best playlist in the world',
-	// 		imgSrc:
-	// 			'https://i.scdn.co/image/ab67706f000000028b7b685e7ef24f048048ba3e',
-	// 	},
-	// ]
 	const [playlists, setPlaylists] = useState<IPlaylist[]>([])
 	const [albums, setAlbums] = useState<IAlbum[]>([])
 

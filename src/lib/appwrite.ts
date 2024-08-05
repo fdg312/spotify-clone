@@ -10,6 +10,8 @@ export const COLLECTIONID_AUTHORS = import.meta.env
 	.VITE_APPWRITE_COLLECTIONID_AUTHORS
 export const COLLECTIONID_TRACKS = import.meta.env
 	.VITE_APPWRITE_COLLECTIONID_TRACKS
+export const COLLECTIONID_ACCOUNTS = import.meta.env
+	.VITE_APPWRITE_COLLECTIONID_ACCOUNTS
 
 export const client = new Client()
 
