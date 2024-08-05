@@ -2,6 +2,7 @@ import { Models } from 'appwrite'
 import { useColor } from 'color-thief-react'
 import { useEffect, useRef, useState } from 'react'
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom'
+import { AddIcon } from '../../assets/icons/AddIcon'
 import { ClockIcon } from '../../assets/icons/ClockIcon'
 import { DotsIcon } from '../../assets/icons/DotsIcon'
 import SongList, { SongListProps } from '../../components/songList/SongList'
@@ -95,6 +96,9 @@ const Playlist = () => {
 			>
 				<div className={styles.buttons}>
 					<PlayButton playingStatus={playingStatus} color='green' />
+					<div className={styles.add}>
+						<AddIcon />
+					</div>
 					<div
 						onClick={() => setIsDropwdown(!isDropdown)}
 						className={styles.dots}

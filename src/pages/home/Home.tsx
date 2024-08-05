@@ -38,7 +38,6 @@ const Home = () => {
 				COLLECTIONID_PLAYLISTS,
 				[Query.orderDesc('$createdAt')]
 			)
-			console.log(albums_data)
 
 			setPlaylists(playlists_data.documents)
 			setAlbums(albums_data.documents)

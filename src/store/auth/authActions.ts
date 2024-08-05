@@ -40,3 +40,14 @@ export const login = createAsyncThunk(
 		}
 	}
 )
+
+export const checkAuth = createAsyncThunk(
+	'auth/checkAuth',
+	async (_, { rejectWithValue }) => {
+		try {
+			return account.get()
+		} catch (error) {
+			return rejectWithValue(error)
+		}
+	}
+)
