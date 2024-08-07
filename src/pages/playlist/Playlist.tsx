@@ -9,6 +9,7 @@ import SongList, { SongListProps } from '../../components/songList/SongList'
 import { PlayButton } from '../../components/ui/button/playButton/PlayButton'
 import { Dropdown } from '../../components/ui/dropdown/Dropdown'
 import { albumDropdownElements } from '../../constants/dropdown'
+import { useAppSelector } from '../../hooks/reduxHooks'
 import {
 	COLLECTIONID_PLAYLISTS,
 	DATABASEID,
@@ -23,6 +24,8 @@ const Playlist = () => {
 	const playlist = useLoaderData() as IPlaylist
 	const { currentSong, isPlaying } = useAudio()
 	const [playingStatus, setPlayingStatus] = useState(false)
+	const [isOwner, setIsOwner] = useState(false)
+	const { user } = useAppSelector(state => state.auth)
 
 	useEffect(() => {
 		const status =
@@ -32,7 +35,17 @@ const Playlist = () => {
 			}).length
 
 		setPlayingStatus(status)
-	}, [])
+		setIsOwner(playlist.accounts.userId === user?.$id)
+	}, [
+		isPlaying,
+		setPlayingStatus,
+		playlist.tracks,
+		currentSong.src,
+		setIsOwner,
+		isOwner,
+		playlist.accounts.userId,
+		user?.$id,
+	])
 
 	const { data } = useColor(playlist.imgSrc, 'rgbArray', {
 		crossOrigin: 'quality',
@@ -80,11 +93,20 @@ const Playlist = () => {
 				</div>
 				<div className={styles.info}>
 					<span className={styles.type}>Playlist</span>
-					<h1 className={styles.title}>{playlist.title}</h1>
+					<h1
+						style={{
+							cursor: isOwner ? 'pointer' : 'default',
+						}}
+						className={styles.title}
+					>
+						{playlist.title}
+					</h1>
 					<div className={styles.data}>
-						<span className={styles.quantity}>
-							{playlist.tracks.length} songs
-						</span>
+						{!!playlist.tracks.length && (
+							<span className={styles.quantity}>
+								{playlist.tracks.length} songs
+							</span>
+						)}
 					</div>
 				</div>
 			</div>
@@ -120,6 +142,7 @@ const Playlist = () => {
 				</div>
 				<SongList songs={songs} />
 			</div>
+			<div className={styles.modal}></div>
 		</div>
 	)
 }

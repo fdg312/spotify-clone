@@ -9,15 +9,15 @@ import styles from './signup.module.css'
 
 const SignUp = () => {
 	const [form, setForm] = useState({ email: '', password: '', username: '' })
-	const { loading, error } = useAppSelector(state => state.auth)
+	const { loading, error, user } = useAppSelector(state => state.auth)
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		if (error !== null && !loading) {
+		if (error === null && !loading && user !== null) {
 			navigate('/')
 		}
-	}, [error, loading, navigate])
+	}, [error, loading, navigate, user])
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()

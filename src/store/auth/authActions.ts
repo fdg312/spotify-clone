@@ -1,11 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ID, Permission, Role } from 'appwrite'
+import { AppwriteException, ID, Permission, Query, Role } from 'appwrite'
 import {
 	account,
 	COLLECTIONID_ACCOUNTS,
 	DATABASEID,
 	databases,
 } from '../../lib/appwrite'
+import { IAccount } from '../../types/Account'
 import { getRandomColor } from '../../utils/getRandomColor'
 
 interface RegisterPayload {
@@ -24,10 +25,8 @@ export const register = createAsyncThunk(
 			await account.create(ID.unique(), email, password, username)
 			await account.createEmailPasswordSession(email, password)
 			const newUser = await account.get()
-			console.log(newUser)
-			console.log(await account.getSession('current'))
 
-			await databases.createDocument(
+			const newAccount = await databases.createDocument<IAccount>(
 				DATABASEID,
 				COLLECTIONID_ACCOUNTS,
 				ID.unique(),
@@ -42,8 +41,11 @@ export const register = createAsyncThunk(
 				]
 			)
 
-			return newUser
+			return { account: newAccount, user: newUser }
 		} catch (error) {
+			if (error instanceof AppwriteException) {
+				return rejectWithValue({ message: error.message })
+			}
 			return rejectWithValue(error)
 		}
 	}
@@ -59,8 +61,19 @@ export const login = createAsyncThunk(
 	async ({ email, password }: LoginPayload, { rejectWithValue }) => {
 		try {
 			await account.createEmailPasswordSession(email, password)
-			return await account.get()
+			const user = await account.get()
+			const foundAccount = await databases.listDocuments(
+				DATABASEID,
+				COLLECTIONID_ACCOUNTS,
+				[Query.equal('userId', user.$id)]
+			)
+
+			const currentAccount = foundAccount.documents[0] as IAccount
+			return { account: currentAccount, user: user }
 		} catch (error) {
+			if (error instanceof AppwriteException) {
+				return rejectWithValue({ message: error.message })
+			}
 			return rejectWithValue(error)
 		}
 	}
@@ -70,8 +83,19 @@ export const getCurrent = createAsyncThunk(
 	'auth/getCurrent',
 	async (_, { rejectWithValue }) => {
 		try {
-			return await account.get()
+			const user = await account.get()
+			const foundAccount = await databases.listDocuments(
+				DATABASEID,
+				COLLECTIONID_ACCOUNTS,
+				[Query.equal('userId', user.$id)]
+			)
+
+			const currentAccount = foundAccount.documents[0] as IAccount
+			return { account: currentAccount, user: user }
 		} catch (error) {
+			if (error instanceof AppwriteException) {
+				return rejectWithValue({ message: error.message })
+			}
 			return rejectWithValue(error)
 		}
 	}

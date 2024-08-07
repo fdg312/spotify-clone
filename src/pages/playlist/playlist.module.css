@@ -106,3 +106,8 @@
 	height: 40px;
 	fill: var(--text-grey);
 }
+
+.modal {
+	background: var(--bg-somegrey);
+	border-radius: 10px;
+}

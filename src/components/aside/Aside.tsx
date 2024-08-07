@@ -1,15 +1,52 @@
+import { ID, Permission, Role } from 'appwrite'
 import { useContext } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { MediaLibraryIcon } from '../../assets/icons/MediaLibraryIcon'
 import { SearchActiveIcon } from '../../assets/icons/SearchActiveIcon'
 import { SearchIcon } from '../../assets/icons/SearchIcon'
 import { SpotifyIcon } from '../../assets/icons/SpotifyIcon'
+import { useAppSelector } from '../../hooks/reduxHooks'
+import {
+	COLLECTIONID_PLAYLISTS,
+	DATABASEID,
+	databases,
+} from '../../lib/appwrite'
 import { AuthAlertContext } from '../../providers/AuthAlertProvider'
 import styles from './aside.module.css'
 
 const Aside = () => {
 	const location = useLocation()
+	const navigate = useNavigate()
 	const { setAlert } = useContext(AuthAlertContext)
+	const { error, loading, user, account } = useAppSelector(state => state.auth)
+
+	const handleClick = async () => {
+		if (error === null && !loading && user !== null) {
+			const playlists = await databases.listDocuments(
+				DATABASEID,
+				COLLECTIONID_PLAYLISTS
+			)
+			const newPlaylist = await databases.createDocument(
+				DATABASEID,
+				COLLECTIONID_PLAYLISTS,
+				ID.unique(),
+				{
+					title: `My Playlist №${playlists.total}`,
+					imgSrc:
+						'https://i.scdn.co/image/ab67706f000000028b7b685e7ef24f048048ba3e',
+					accounts: account?.$id,
+				},
+				[
+					Permission.delete(Role.user(user.$id)),
+					Permission.read(Role.any()),
+					Permission.update(Role.user(user.$id)),
+				]
+			)
+			navigate(`/playlist/${newPlaylist.$id}`)
+			return
+		}
+		setAlert(true)
+	}
 
 	return (
 		<nav className={styles.aside}>
@@ -37,11 +74,10 @@ const Aside = () => {
 					<p className={styles.title}>Create your first playlist</p>
 					<p className={styles.desc}>It`s easy, we`ll help you</p>
 				</div>
-				<button onClick={() => setAlert(true)} className={styles.btn}>
+				<button onClick={handleClick} className={styles.btn}>
 					Create playlist
 				</button>
 			</div>
-			<div className='auth-alert'></div>
 		</nav>
 	)
 }
