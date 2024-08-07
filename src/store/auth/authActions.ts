@@ -22,7 +22,7 @@ export const register = createAsyncThunk(
 		{ rejectWithValue }
 	) => {
 		try {
-			await account.create(ID.unique(), email, password, username)
+			await account.create(ID.unique(), email, password)
 			await account.createEmailPasswordSession(email, password)
 			const newUser = await account.get()
 
@@ -33,6 +33,7 @@ export const register = createAsyncThunk(
 				{
 					userId: newUser.$id,
 					avatarColor: getRandomColor(),
+					displayName: username,
 				},
 				[
 					Permission.read(Role.user(newUser.$id)),

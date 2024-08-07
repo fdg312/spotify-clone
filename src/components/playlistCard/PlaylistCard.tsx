@@ -9,7 +9,7 @@ const PlaylistCard = ({
 	id,
 }: {
 	id: string
-	src: string
+	src?: string
 	title: string
 	desc: string
 }) => {

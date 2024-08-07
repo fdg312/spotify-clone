@@ -53,16 +53,20 @@ const Playlist = () => {
 	const [isDropdown, setIsDropwdown] = useState(false)
 	const dropdownRef = useRef<HTMLDivElement>(null)
 
-	const [songs] = useState<SongListProps[]>(
-		playlist.tracks.map((song: ITrack) => ({
-			title: song.title,
-			duration: song.duration,
-			srcImg: song.album.imgSrc,
-			id: song.id,
-			path: song.path,
-			author: song.author.name,
-		}))
-	)
+	const [songs, setSongs] = useState<SongListProps[]>()
+
+	useEffect(() => {
+		setSongs(
+			playlist.tracks.map((song: ITrack) => ({
+				title: song.title,
+				duration: song.duration,
+				srcImg: song.album.imgSrc,
+				id: song.id,
+				path: song.path,
+				author: song.author.name,
+			}))
+		)
+	}, [songs])
 
 	const handleClickOutside = (event: MouseEvent) => {
 		if (
@@ -74,6 +78,8 @@ const Playlist = () => {
 	}
 
 	useEffect(() => {
+		console.log(songs)
+
 		document.addEventListener('mousedown', handleClickOutside)
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside)
@@ -118,9 +124,11 @@ const Playlist = () => {
 			>
 				<div className={styles.buttons}>
 					<PlayButton playingStatus={playingStatus} color='green' />
-					<div className={styles.add}>
-						<AddIcon />
-					</div>
+					{!isOwner && (
+						<div className={styles.add}>
+							<AddIcon />
+						</div>
+					)}
 					<div
 						onClick={() => setIsDropwdown(!isDropdown)}
 						className={styles.dots}
@@ -131,16 +139,20 @@ const Playlist = () => {
 						</div>
 					</div>
 				</div>
-				<div className={styles.layout}>
-					<div className={styles.leftlayout}>
-						<span className={styles.id}>#</span>
-						<span className={styles.leftlayout}>Title</span>
-					</div>
-					<div className={styles.rightlayout}>
-						<ClockIcon />
-					</div>
-				</div>
-				<SongList songs={songs} />
+				{!!songs?.length && (
+					<>
+						<div className={styles.layout}>
+							<div className={styles.leftlayout}>
+								<span className={styles.id}>#</span>
+								<span className={styles.leftlayout}>Title</span>
+							</div>
+							<div className={styles.rightlayout}>
+								<ClockIcon />
+							</div>
+						</div>
+						<SongList songs={songs} />
+					</>
+				)}
 			</div>
 			<div className={styles.modal}></div>
 		</div>

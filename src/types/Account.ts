@@ -6,8 +6,9 @@ import { ITrack } from './Track'
 export interface IAccount extends Models.Document {
 	userId: string
 	avatarColor: string
+	displyName: string
 	favouriteTracks: ITrack[] | null
-	myPlaylists: IPlaylist[]
-	favouritePlaylists: IPlaylist[]
-	favouriteAlbums: IAlbum[]
+	myPlaylists: IPlaylist[] | null
+	favouritePlaylists: IPlaylist[] | null
+	favouriteAlbums: IAlbum[] | null
 }

@@ -13,22 +13,21 @@
 
 /* svg */
 
-.aside svg {
-	fill: var(--text-grey);
-}
-
-.aside svg:hover {
-	fill: white;
-}
-
 .search_link svg {
+	fill: var(--text-grey);
 	width: 24px;
 	height: 24px;
 }
 
 .medialibrary_link svg {
+	fill: var(--text-grey);
 	width: 24px;
 	height: 24px;
+}
+
+.search_link svg:hover,
+.medialibrary_link svg:hover {
+	fill: white;
 }
 
 /* logo */
@@ -139,4 +138,10 @@
 
 .createplaylist_div .btn:hover {
 	transform: scale(1.05);
+}
+
+.libraries {
+	width: 100%;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }

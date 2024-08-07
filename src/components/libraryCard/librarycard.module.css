@@ -1,0 +1,91 @@
+.card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	padding: 12px;
+	border-radius: 10px;
+	cursor: pointer;
+	word-wrap: break-word;
+	text-decoration: none;
+	color: inherit;
+}
+
+.title {
+}
+
+.card p {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin: 0;
+}
+
+.author {
+	font-size: 15px;
+	color: white;
+}
+
+.author:hover {
+	text-decoration: none;
+}
+
+.card img {
+	border-radius: 10px;
+}
+
+.card:hover {
+	background: var(--bg-lightdark);
+}
+
+.text {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.btn_div {
+	transition: 0.2s;
+	opacity: 0;
+	position: absolute;
+	top: 46%;
+	right: 20px;
+	transform: translateY(30%);
+}
+
+.btn_div svg {
+	fill: black;
+}
+
+.btn_div svg:hover {
+	fill: black;
+}
+
+.card:hover > .btn_div {
+	transform: translateY(0);
+	opacity: 1;
+}
+
+.img_not_songs {
+	position: relative;
+	padding-top: 100%;
+	background: var(--bg-somegrey);
+}
+
+.img_not_songs svg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 100px;
+	width: 100px;
+}
+
+.img_not_songs svg:hover {
+	fill: var(--text-grey);
+}
+
+.info {
+	display: flex;
+	gap: 3px;
+}

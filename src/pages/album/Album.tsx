@@ -2,13 +2,20 @@ import { Models } from 'appwrite'
 import { useColor } from 'color-thief-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, LoaderFunctionArgs, useLoaderData } from 'react-router-dom'
+import { AddIcon } from '../../assets/icons/AddIcon'
 import { ClockIcon } from '../../assets/icons/ClockIcon'
 import { DotsIcon } from '../../assets/icons/DotsIcon'
 import SongList, { SongListProps } from '../../components/songList/SongList'
 import { PlayButton } from '../../components/ui/button/playButton/PlayButton'
 import { Dropdown } from '../../components/ui/dropdown/Dropdown'
 import { albumDropdownElements } from '../../constants/dropdown'
-import { COLLECTIONID_ALBUMS, DATABASEID, databases } from '../../lib/appwrite'
+import { useAppSelector } from '../../hooks/reduxHooks'
+import {
+	COLLECTIONID_ACCOUNTS,
+	COLLECTIONID_ALBUMS,
+	DATABASEID,
+	databases,
+} from '../../lib/appwrite'
 import { IAlbum } from '../../types/Album'
 import { ITrack } from '../../types/Track'
 import styles from './album.module.css'
@@ -19,7 +26,9 @@ export const Album = () => {
 		crossOrigin: 'quality',
 	})
 	const [isDropdown, setIsDropwdown] = useState(false)
+	const [isFavourite, setIsFavourite] = useState(false)
 	const dropdownRef = useRef<HTMLDivElement>(null)
+	const { account } = useAppSelector(state => state.auth)
 	const [songs] = useState<SongListProps[]>(
 		album.tracks.map((song: ITrack) => ({
 			title: song.title,
@@ -37,6 +46,28 @@ export const Album = () => {
 			!dropdownRef.current.contains(event.target as Node)
 		) {
 			setIsDropwdown(false)
+		}
+	}
+
+	const handleClickFavourite = () => {
+		if (isFavourite) {
+			let newArrayFavourites = account?.favouriteAlbums?.filter(
+				alb => alb.$id !== album.$id
+			)
+
+			newArrayFavourites = newArrayFavourites?.map(alb => alb.id)
+
+			databases.updateDocument(DATABASEID, COLLECTIONID_ACCOUNTS, album.$id, {
+				albums: newArrayFavourites,
+			})
+			setIsFavourite(false)
+		} else {
+			const newFavourites = [...(account?.favouriteAlbums ?? []), album]
+
+			databases.updateDocument(DATABASEID, COLLECTIONID_ACCOUNTS, album.$id, {
+				albums: newFavourites,
+			})
+			setIsFavourite(true)
 		}
 	}
 
@@ -82,6 +113,9 @@ export const Album = () => {
 			>
 				<div className={styles.buttons}>
 					<PlayButton color='green' />
+					<div className={styles.add}>
+						<AddIcon />
+					</div>
 					<div
 						onClick={() => setIsDropwdown(!isDropdown)}
 						className={styles.dots}
