@@ -9,7 +9,10 @@ import Login from '../pages/auth/login/Login'
 import SignUp from '../pages/auth/signup/SignUp'
 import Genre from '../pages/genre/Genre'
 import Home from '../pages/home/Home'
-import Playlist, { playlistLoader } from '../pages/playlist/Playlist'
+import Playlist, {
+	playlistAction,
+	playlistLoader,
+} from '../pages/playlist/Playlist'
 import { useAudio } from '../providers/AudioProvider'
 import Providers from '../providers/Provider'
 import { store } from '../store/store'
@@ -62,6 +65,7 @@ export const router = createBrowserRouter([
 				path: 'playlist/:playlistId',
 				element: <Playlist />,
 				loader: playlistLoader,
+				action: playlistAction,
 			},
 		],
 	},

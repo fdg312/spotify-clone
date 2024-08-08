@@ -62,7 +62,7 @@ const Aside = () => {
 					}`}
 				>
 					{location.pathname === '/' ? <SearchActiveIcon /> : <SearchIcon />}
-					<span>Search</span>
+					<Link to='/'>Search</Link>
 				</div>
 			</div>
 			<div className={styles.medialibrary_div}>

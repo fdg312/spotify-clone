@@ -12,6 +12,7 @@ interface ISong {
 	url: string
 	id: number
 	srcImg: string
+	album?: string
 }
 
 const SongItem = ({ title, author, duration, url, id, srcImg }: ISong) => {
@@ -31,6 +32,7 @@ const SongItem = ({ title, author, duration, url, id, srcImg }: ISong) => {
 					duration,
 					index: id,
 					srcImg,
+					time: 0,
 				})
 			}
 			className={styles.wrapper}
@@ -46,6 +48,7 @@ const SongItem = ({ title, author, duration, url, id, srcImg }: ISong) => {
 								duration,
 								index: id,
 								srcImg,
+								time: 0,
 							})
 						}
 					>
@@ -86,6 +89,7 @@ const SongItem = ({ title, author, duration, url, id, srcImg }: ISong) => {
 					<span className={styles.author}>{author}</span>
 				</div>
 			</div>
+			{/* <span className={styles.album}>{album}</span> */}
 			<span className={styles.duration}>{secondsToTime(duration)}</span>
 		</div>
 	)

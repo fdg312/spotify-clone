@@ -1,7 +1,7 @@
 .wrapper {
-	display: flex;
-	justify-content: space-between;
+	display: grid;
 	align-items: center;
+	grid-template-columns: 1fr 1fr;
 	border-radius: 10px;
 	padding: 5px 30px;
 }
@@ -50,6 +50,7 @@
 
 .duration {
 	color: var(--text-grey);
+	text-align: end;
 }
 
 .active {
@@ -58,4 +59,7 @@
 
 .active svg {
 	fill: var(--green);
+}
+
+.album {
 }

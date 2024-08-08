@@ -36,7 +36,7 @@ export const register = createAsyncThunk(
 					displayName: username,
 				},
 				[
-					Permission.read(Role.user(newUser.$id)),
+					Permission.read(Role.any()),
 					Permission.update(Role.user(newUser.$id)),
 					Permission.delete(Role.user(newUser.$id)),
 				]
@@ -93,6 +93,21 @@ export const getCurrent = createAsyncThunk(
 
 			const currentAccount = foundAccount.documents[0] as IAccount
 			return { account: currentAccount, user: user }
+		} catch (error) {
+			if (error instanceof AppwriteException) {
+				return rejectWithValue({ message: error.message })
+			}
+			return rejectWithValue(error)
+		}
+	}
+)
+
+export const logout = createAsyncThunk(
+	'auth/logout',
+	async (_, { rejectWithValue }) => {
+		try {
+			await account.deleteSession('current')
+			return
 		} catch (error) {
 			if (error instanceof AppwriteException) {
 				return rejectWithValue({ message: error.message })

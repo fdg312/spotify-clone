@@ -10,10 +10,12 @@ export interface SongListProps {
 	srcImg: string
 	id: number
 	path: string
+	album?: string
 }
 
 const SongList = ({ songs }: { songs: SongListProps[] }) => {
 	const { setSongList } = useAudio()
+
 	useEffect(() => {
 		setSongList(
 			songs.map((song: SongListProps, index: number) => ({
@@ -23,9 +25,10 @@ const SongList = ({ songs }: { songs: SongListProps[] }) => {
 				src: song.path,
 				srcImg: song.srcImg,
 				index: index + 1,
+				time: 0,
 			}))
 		)
-	}, [setSongList, songs])
+	}, [])
 
 	return (
 		<div className={styles.songlist}>
@@ -38,6 +41,7 @@ const SongList = ({ songs }: { songs: SongListProps[] }) => {
 					url={song.path}
 					id={id + 1}
 					srcImg={song.srcImg}
+					album={song.album}
 				/>
 			))}
 		</div>

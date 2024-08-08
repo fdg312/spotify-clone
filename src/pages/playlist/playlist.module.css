@@ -75,9 +75,12 @@
 	cursor: pointer;
 	display: flex;
 	align-items: center;
+}
+
+.dots_icon {
+	fill: var(--text-grey);
 	width: 40px;
 	height: 40px;
-	fill: var(--text-grey);
 }
 
 .dots svg:hover {
@@ -107,7 +110,81 @@
 	fill: var(--text-grey);
 }
 
+.wrapper_modal {
+	background-color: rgba(0, 0, 0, 0.7);
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 .modal {
+	padding: 50px;
 	background: var(--bg-somegrey);
 	border-radius: 10px;
+	max-width: 90%;
+	max-height: 90%;
+	overflow-y: auto;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	display: flex;
+	gap: 20px;
+	position: relative;
+}
+
+.modal img {
+	border-radius: 10px;
+	width: 200px;
+	height: 200px;
+}
+
+.modal form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 250px;
+	min-height: 150px;
+	max-height: 200px;
+}
+
+.modal button {
+	transition: 0.1s;
+	cursor: pointer;
+	background: #fff;
+	color: var(--bg-dark);
+	padding: 10px 30px;
+	border-radius: 30px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.modal button {
+	transform: scale(1.05);
+}
+
+.modal input {
+	padding: 10px;
+}
+
+.modal textarea {
+	padding: 10px;
+	height: 100%;
+	resize: none;
+}
+
+.close {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	cursor: pointer;
+}
+
+.close svg {
+	fill: white;
+	width: 24px;
+	height: 24px;
 }

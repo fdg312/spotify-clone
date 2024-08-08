@@ -44,3 +44,20 @@
 .btn_login:hover {
 	transform: scale(1.05);
 }
+
+.avatar {
+	position: relative;
+	border-radius: 50%;
+	height: 40px;
+	width: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.dropdown {
+	position: absolute;
+	top: 120%;
+	right: 0;
+}

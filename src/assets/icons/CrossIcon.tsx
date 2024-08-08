@@ -1,4 +1,4 @@
-export const CrossIcon = ({ onClick }: { onClick: () => void }) => (
+export const CrossIcon = ({ onClick }: { onClick?: () => void }) => (
 	<svg
 		onClick={onClick}
 		data-encore-id='icon'

@@ -19,6 +19,11 @@
 	height: 24px;
 }
 
+.search_link a {
+	color: var(--text-grey);
+	text-decoration: none;
+}
+
 .medialibrary_link svg {
 	fill: var(--text-grey);
 	width: 24px;
@@ -61,10 +66,12 @@
 	border-radius: 10px;
 	background-color: var(--bg-dark);
 	margin-bottom: 10px;
+	display: flex;
+	flex-direction: column;
 }
 
-.search_link.active,
-.search_link:hover {
+.search_link.active a,
+.search_link:hover a {
 	color: white;
 }
 

@@ -7,23 +7,21 @@ interface DropdownProps {
 		title: string
 		icon?: FC
 		link?: string
+		onClick?: () => void
 	}>
-	isShow: boolean
 }
 
-export const Dropdown = ({ elements, isShow }: DropdownProps) => {
+export const Dropdown = ({ elements }: DropdownProps) => {
 	return (
-		isShow && (
-			<div onClick={e => e.stopPropagation()} className={styles.dropdown}>
-				<div className={styles.elements}>
-					{elements.map(({ title, icon: Icon, link }) => (
-						<div key={title} className={styles.element}>
-							{Icon && <Icon />}
-							{link ? <Link to={link}>{title}</Link> : <span>{title}</span>}
-						</div>
-					))}
-				</div>
+		<div onClick={e => e.stopPropagation()} className={styles.dropdown}>
+			<div className={styles.elements}>
+				{elements.map(({ title, icon: Icon, link, onClick }) => (
+					<div onClick={onClick} key={title} className={styles.element}>
+						{Icon && <Icon />}
+						{link ? <Link to={link}>{title}</Link> : <span>{title}</span>}
+					</div>
+				))}
 			</div>
-		)
+		</div>
 	)
 }

@@ -75,9 +75,12 @@
 	cursor: pointer;
 	display: flex;
 	align-items: center;
+}
+
+.dots_icon {
+	fill: var(--text-grey);
 	width: 40px;
 	height: 40px;
-	fill: var(--text-grey);
 }
 
 .dots svg:hover {
