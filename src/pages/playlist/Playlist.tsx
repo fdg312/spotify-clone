@@ -13,7 +13,7 @@ import { ClockIcon } from '../../assets/icons/ClockIcon'
 import { CrossIcon } from '../../assets/icons/CrossIcon'
 import { DotsIcon } from '../../assets/icons/DotsIcon'
 import { TickIcon } from '../../assets/icons/TickIcon'
-import SongList, { SongListProps } from '../../components/songList/SongList'
+import SongList from '../../components/songList/SongList'
 import { PlayButton } from '../../components/ui/button/playButton/PlayButton'
 import { Dropdown } from '../../components/ui/dropdown/Dropdown'
 import { albumDropdownElements } from '../../constants/dropdown'
@@ -48,7 +48,6 @@ const Playlist = () => {
 	const modalFormRef = useRef<HTMLFormElement>(null)
 	const modalRef = useRef<HTMLDivElement>(null)
 	const closeRef = useRef<HTMLDivElement>(null)
-	const [songs, setSongs] = useState<SongListProps[]>()
 	const [isModal, setIsModal] = useState(false)
 
 	const handleClickFavourite = async () => {
@@ -108,21 +107,8 @@ const Playlist = () => {
 		isOwner,
 		playlist.accounts.userId,
 		user?.$id,
+		account?.favouritePlaylists,
 	])
-
-	useEffect(() => {
-		setSongs(
-			playlist.tracks.map((song: ITrack) => ({
-				title: song.title,
-				duration: song.duration,
-				srcImg: song.album.imgSrc,
-				id: song.id,
-				path: song.path,
-				author: song.author.name,
-				album: song.album.title,
-			}))
-		)
-	}, [])
 
 	const handleClickOutsideDropdown = (event: MouseEvent) => {
 		if (
@@ -224,7 +210,7 @@ const Playlist = () => {
 						</div>
 					</div>
 				</div>
-				{!!songs?.length && (
+				{!!playlist.tracks?.length && (
 					<>
 						<div className={styles.layout}>
 							<div className={styles.leftlayout}>
@@ -235,7 +221,7 @@ const Playlist = () => {
 								<ClockIcon />
 							</div>
 						</div>
-						<SongList songs={songs} />
+						<SongList playlist={playlist} songs={playlist.tracks} />
 					</>
 				)}
 			</div>
@@ -302,25 +288,45 @@ export const playlistAction = async ({
 	const { playlistId } = params
 
 	if (!playlistId) throw new Error('Playlist ID is missing')
+	console.log(request)
 
-	const formData = await request.formData()
-	const title = formData.get('title') as string
-	const description = formData.get('desc') as string | undefined
+	if (request.method === 'post') {
+		const formData = await request.formData()
+		const title = formData.get('title') as string
+		const description = formData.get('desc') as string | undefined
 
-	const updatedPlaylist = { title, description }
+		const updatedPlaylist = { title, description }
 
-	const response = await databases.updateDocument(
-		DATABASEID,
-		COLLECTIONID_PLAYLISTS,
-		playlistId,
-		updatedPlaylist
-	)
+		const response = await databases.updateDocument(
+			DATABASEID,
+			COLLECTIONID_PLAYLISTS,
+			playlistId,
+			updatedPlaylist
+		)
 
-	if (!response) {
-		throw new Error('Failed to update playlist')
+		if (!response) {
+			throw new Error('Failed to update playlist')
+		}
+
+		return response
+	} else if (request.method === 'delete') {
+		const formData = await request.formData()
+		const trackId = formData.get('trackId') as string
+		const trackIds = formData.get('trackIds')
+		const playlistId = formData.get('playlistId') as string
+
+		const response = await databases.updateDocument(
+			DATABASEID,
+			COLLECTIONID_PLAYLISTS,
+			playlistId
+		)
+
+		if (!response) {
+			throw new Error('Failed to update playlist')
+		}
+
+		return response
 	}
-
-	return response
 }
 
 export default Playlist

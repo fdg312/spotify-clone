@@ -22,7 +22,7 @@ interface IAudioSong {
 	duration: number
 	src: string
 	srcImg: string
-	time: number
+	time?: number
 }
 
 export const AudioContext = createContext<AudioContextProps>({

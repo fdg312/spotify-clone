@@ -10,6 +10,10 @@
 	background: rgba(255, 255, 255, 0.1);
 }
 
+.hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
 .main {
 	display: flex;
 	align-items: center;
@@ -62,4 +66,18 @@
 }
 
 .album {
+}
+
+.dropdowns {
+	position: absolute;
+}
+
+.dropdown {
+	position: relative;
+}
+
+.dropdownPlaylists {
+	top: 0;
+	left: calc(100% - 10px);
+	position: absolute;
 }
