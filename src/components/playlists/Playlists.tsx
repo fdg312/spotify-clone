@@ -11,18 +11,20 @@ const Playlists = ({ title, playlists }: PlaylistsProps) => {
 	return (
 		<>
 			<h2 className={styles.title}>{title}</h2>
-			<div className={styles.playlists}>
-				{playlists.map(playlist => (
-					<div key={playlist.title}>
-						<PlaylistCard
-							id={playlist.$id}
-							title={playlist.title}
-							desc={playlist.description}
-							src={playlist.imgSrc}
-						/>
-					</div>
-				))}
-			</div>
+			{playlists.length ? (
+				<div className={styles.playlists}>
+					{playlists.map(playlist => (
+						<div key={playlist.title}>
+							<PlaylistCard
+								id={playlist.$id}
+								title={playlist.title}
+								desc={playlist.description}
+								src={playlist.imgSrc}
+							/>
+						</div>
+					))}
+				</div>
+			) : null}
 		</>
 	)
 }

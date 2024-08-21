@@ -7,6 +7,7 @@ interface MyInputProps {
 	value: string
 	onChange: React.ChangeEventHandler<HTMLInputElement>
 	reset: () => void
+	onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
 	svgIcon?: JSX.Element
 }
 
@@ -17,6 +18,7 @@ export const MyInput: React.FC<MyInputProps> = ({
 	onChange,
 	reset,
 	svgIcon,
+	onKeyDown,
 }) => {
 	return (
 		<div className={styles.input_div}>
@@ -26,6 +28,7 @@ export const MyInput: React.FC<MyInputProps> = ({
 				placeholder={placeholder}
 				value={value}
 				onChange={onChange}
+				onKeyDown={onKeyDown}
 			/>
 			{value.length ? <CrossIcon onClick={reset} /> : null}
 		</div>

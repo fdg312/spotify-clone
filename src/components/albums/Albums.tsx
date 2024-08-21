@@ -11,18 +11,20 @@ const Albums = ({ title, albums }: AlbumsProps) => {
 	return (
 		<>
 			<h2 className={styles.title}>{title}</h2>
-			<div className={styles.albums}>
-				{albums.map(album => (
-					<div key={album.title}>
-						<AlbumCard
-							id={album.$id}
-							title={album.title}
-							author={album.author.name}
-							src={album.imgSrc}
-						/>
-					</div>
-				))}
-			</div>
+			{albums.length ? (
+				<div className={styles.albums}>
+					{albums.map(album => (
+						<div key={album.title}>
+							<AlbumCard
+								id={album.$id}
+								title={album.title}
+								author={album.author.name}
+								src={album.imgSrc}
+							/>
+						</div>
+					))}
+				</div>
+			) : null}
 		</>
 	)
 }

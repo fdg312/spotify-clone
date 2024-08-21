@@ -24,6 +24,11 @@
 .author {
 	font-size: 15px;
 	color: white;
+	padding: 0;
+	border: none;
+	background-color: transparent;
+	text-decoration: underline;
+	cursor: pointer;
 }
 
 .author:hover {

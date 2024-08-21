@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useAudio } from '../../providers/AudioProvider'
+import { IAlbum } from '../../types/Album'
 import { IPlaylist } from '../../types/Playlist'
 import { ITrack } from '../../types/Track'
 import SongItem from '../songItem/SongItem'
@@ -9,8 +10,10 @@ import styles from './songlist.module.css'
 const SongList = ({
 	songs,
 	playlist,
+	album,
 }: {
 	songs: ITrack[]
+	album?: IAlbum
 	playlist?: IPlaylist
 }) => {
 	const { setSongList } = useAudio()
@@ -22,9 +25,11 @@ const SongList = ({
 				author: song.author.title,
 				duration: song.duration,
 				src: song.path,
-				srcImg: song.album.imgSrc,
+				srcImg: album?.$id ? album?.imgSrc : songs[0].album.imgSrc,
 				index: index + 1,
-				time: 0,
+				playlistId: playlist?.$id ? playlist.$id : '',
+				albumId: album?.$id ? album.$id : '',
+				trackId: song.$id,
 			}))
 		)
 	}, [])
@@ -39,10 +44,10 @@ const SongList = ({
 					duration={song.duration}
 					url={song.path}
 					id={id + 1}
-					srcImg={song.album.imgSrc}
-					album={song.album}
+					srcImg={album?.$id ? album?.imgSrc : song.album.imgSrc}
 					playlist={playlist}
 					trackId={song.$id}
+					album={album}
 				/>
 			))}
 		</div>

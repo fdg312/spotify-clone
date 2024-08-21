@@ -24,7 +24,7 @@ const AudioPlayer: FC = () => {
 		changeTime,
 	} = useAudio()
 
-	const { duration = 0, time = 0 } = currentSong
+	const { duration, time } = currentSong
 	const [temporaryTime, setTemporaryTime] = useState(time)
 	const [notChangeable, setNotChangeable] = useState(false)
 
@@ -46,7 +46,7 @@ const AudioPlayer: FC = () => {
 
 	const handleMouseUp = () => {
 		setNotChangeable(false)
-		changeTime(temporaryTime)
+		changeTime(temporaryTime ?? 0)
 	}
 
 	return (
@@ -81,17 +81,16 @@ const AudioPlayer: FC = () => {
 						</div>
 						<div className={styles.duration}>
 							<span className={styles.now_time}>
-								{secondsToTime(temporaryTime)}
+								{secondsToTime(temporaryTime ?? 0)}
 							</span>
 							<RangeSlider
 								min={0}
 								max={duration}
 								step={1}
-								value={temporaryTime}
+								value={temporaryTime ?? 0}
 								onChange={handleChangeTime}
 								onMouseDown={() => {
 									setNotChangeable(true)
-									console.log(123)
 								}}
 								onMouseUp={handleMouseUp}
 							/>

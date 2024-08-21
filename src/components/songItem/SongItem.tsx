@@ -6,21 +6,17 @@ import {
 	useRef,
 	useState,
 } from 'react'
-import { useFetcher } from 'react-router-dom'
+import { useFetcher, useLocation } from 'react-router-dom'
 import { PauseIcon } from '../../assets/icons/PauseIcon'
 import { PlayIcon } from '../../assets/icons/PlayIcon'
-import {
-	DropdownProps,
-	SongItemContext,
-	SongItemOwnerContext,
-} from '../../constants/dropdown'
-import { useAppSelector } from '../../hooks/reduxHooks'
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import {
 	COLLECTIONID_PLAYLISTS,
 	DATABASEID,
 	databases,
 } from '../../lib/appwrite'
 import { AudioContext } from '../../providers/AudioProvider'
+import { getCurrent } from '../../store/auth/authActions'
 import { IAlbum } from '../../types/Album'
 import { IPlaylist } from '../../types/Playlist'
 import { secondsToTime } from '../../utils/secondsToTime'
@@ -47,84 +43,96 @@ const SongItem = ({
 	id,
 	srcImg,
 	trackId,
-	playlist,
+	album,
+	playlist: loaderPlaylist,
 }: ISong) => {
 	const [isHover, setIsHover] = useState(false)
-	const fetcher = useFetcher()
+	const fetcher = useFetcher({ key: 'getPlaylist' })
+	const location = useLocation()
+	const [playlist, setPlaylist] = useState<IPlaylist | undefined>(
+		loaderPlaylist
+	)
 	const [isDropdown, setIsDropdown] = useState(false)
 	const [isPlaylistsDropdown, setIsPlaylistsDropdown] = useState(false)
-	const [dropdownPlaylistsElements, setDropdownPlaylistsElements] = useState<
-		DropdownProps['elements']
-	>([])
 	const dropdownRef = useRef<HTMLDivElement>(null)
-	const playlistsDropdownRef = useRef<HTMLDivElement>(null)
 	const [pos, setPos] = useState({ x: 0, y: 0 })
 	const myPlaylists = useAppSelector(state => state.auth.account?.myPlaylists)
-	const user = useAppSelector(state => state.auth.user)
+	const dispatch = useAppDispatch()
+	const { user, loading } = useAppSelector(state => state.auth)
 	const { selectAudio, currentSong, pauseAudio, isPlaying } =
 		useContext(AudioContext)
+
+	const [isThisTrack, setIsThisTrack] = useState(false)
+
+	useEffect(() => {
+		if (!fetcher.data?.$id) return
+
+		setPlaylist(fetcher.data)
+	}, [fetcher.data])
+
+	useEffect(() => {
+		if (!currentSong.title) return
+
+		setIsThisTrack(
+			currentSong.trackId === trackId &&
+				(currentSong.albumId === album?.$id ||
+					currentSong.playlistId === playlist?.$id)
+		)
+	}, [trackId, currentSong.title])
 
 	const isOwner = useMemo(
 		() => playlist?.accounts?.userId === user?.$id,
 		[playlist?.accounts?.userId, user?.$id]
 	)
 
-	SongItemContext[0].onMouseEnter = () => setIsPlaylistsDropdown(true)
-	SongItemContext[0].onMouseLeave = () => setIsPlaylistsDropdown(false)
-
 	const addSongToPlaylist = useCallback(
-		async (playlist: IPlaylist) => {
-			const playlistIds = playlist.tracks.map(play => play.$id)
+		async (play: IPlaylist) => {
+			const playlistIds = play.tracks.map(p => p.$id)
 
 			const newPlaylistTracks = Array.from(
 				new Set([...(playlistIds ?? []), trackId])
 			)
 
-			await databases.updateDocument(
+			setIsDropdown(false)
+
+			const response = await databases.updateDocument(
 				DATABASEID,
 				COLLECTIONID_PLAYLISTS,
-				playlist.$id,
+				play.$id,
 				{
 					tracks: newPlaylistTracks,
 				}
 			)
 
-			setIsDropdown(false)
+			setPlaylist(response as IPlaylist)
+			dispatch(getCurrent())
 		},
-		[trackId]
+		[dispatch, trackId]
 	)
 
 	const removeSongFromPlaylist = useCallback(
-		async (playlist: IPlaylist) => {
-			// let trackIds = playlist.tracks.map(play => play.$id)
+		async (playlist: IPlaylist | undefined) => {
+			const trackIds = playlist?.tracks.map(play => play.$id)
 
-			// trackIds = trackIds.filter(id => id !== trackId)
+			setIsDropdown(false)
 
-			// await databases.updateDocument(
-			// 	DATABASEID,
-			// 	COLLECTIONID_PLAYLISTS,
-			// 	playlist.$id,
-			// 	{
-			// 		tracks: trackIds,
-			// 	}
-			// )
-
-			// setIsDropdown(false)
-			console.log(fetcher)
-
-			fetcher.submit({ ads: 'asd' }, { method: 'get', action: '#' })
-			console.log(fetcher)
+			if (trackIds && playlist?.$id) {
+				fetcher.submit(
+					{
+						trackIds,
+						trackId,
+						playlistId: playlist?.$id,
+						accountId: playlist.accounts.$id,
+					},
+					{ method: 'delete', action: location.pathname }
+				)
+			}
 		},
-		[trackId]
+		[fetcher, location.pathname, trackId]
 	)
 
-	useEffect(() => {
-		if (isOwner) {
-			SongItemOwnerContext[1].onClick = () => removeSongFromPlaylist(playlist)
-		}
-	}, [])
-
 	const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (loading) return
 		e.preventDefault()
 		setIsDropdown(true)
 
@@ -155,17 +163,6 @@ const SongItem = ({
 		}
 	}, [isDropdown])
 
-	useEffect(() => {
-		if (myPlaylists) {
-			setDropdownPlaylistsElements(
-				myPlaylists?.map((play: IPlaylist) => ({
-					title: play.title,
-					onClick: () => addSongToPlaylist(play),
-				}))
-			)
-		}
-	}, [myPlaylists, isPlaylistsDropdown, addSongToPlaylist])
-
 	return (
 		<div
 			onMouseEnter={() => setIsHover(true)}
@@ -179,13 +176,16 @@ const SongItem = ({
 					duration,
 					index: id,
 					srcImg,
+					trackId,
+					playlistId: playlist?.$id ? loaderPlaylist?.$id : '',
+					albumId: album?.$id ? album.$id : '',
 					time: 0,
 				})
 			}
 			className={styles.wrapper}
 		>
 			<div className={styles.main}>
-				{isHover && (!isPlaying || currentSong.index !== id) ? (
+				{isHover && (!isPlaying || !isThisTrack) ? (
 					<div
 						onClick={() =>
 							selectAudio({
@@ -195,42 +195,32 @@ const SongItem = ({
 								duration,
 								index: id,
 								srcImg,
+								trackId,
+								playlistId: playlist?.$id ? loaderPlaylist?.$id : '',
+								albumId: album?.$id ? album.$id : '',
 								time: 0,
 							})
 						}
 					>
 						<PlayIcon />
 					</div>
-				) : currentSong.index === id && isPlaying ? (
-					currentSong.index === id &&
-					isPlaying && (
-						<div
-							className={
-								(currentSong.index === id && styles.active) || undefined
-							}
-							onClick={() => {
-								setIsHover(false)
-								pauseAudio()
-							}}
-						>
-							<PauseIcon />
-						</div>
-					)
-				) : (
-					<span
-						className={
-							styles.id + ' ' + (currentSong.index === id && styles.active)
-						}
+				) : isThisTrack && isPlaying ? (
+					<div
+						className={isThisTrack ? styles.active : undefined}
+						onClick={() => {
+							setIsHover(false)
+							pauseAudio()
+						}}
 					>
+						<PauseIcon />
+					</div>
+				) : (
+					<span className={`${styles.id} ${isThisTrack ? styles.active : ''}`}>
 						{id}
 					</span>
 				)}
 				<div className={styles.text}>
-					<h3
-						className={
-							styles.title + ' ' + (currentSong.index === id && styles.active)
-						}
-					>
+					<h3 className={`${styles.title} ${isThisTrack ? styles.active : ''}`}>
 						{title}
 					</h3>
 					<span className={styles.author}>{author}</span>
@@ -238,7 +228,7 @@ const SongItem = ({
 			</div>
 			{/* <span className={styles.album}>{album}</span> */}
 			<span className={styles.duration}>{secondsToTime(duration)}</span>
-			{(isDropdown || isPlaylistsDropdown) && (
+			{isDropdown && (
 				<div
 					ref={dropdownRef}
 					style={{
@@ -249,16 +239,34 @@ const SongItem = ({
 				>
 					<div className={styles.dropdown}>
 						<Dropdown
-							elements={isOwner ? SongItemOwnerContext : SongItemContext}
+							elements={[
+								{
+									title: 'Add to playlist',
+									arrowIcon: true,
+									onMouseEnter: () => setIsPlaylistsDropdown(true),
+									onMouseLeave: () => setIsPlaylistsDropdown(false),
+								},
+								isOwner
+									? {
+											title: 'Remove from this playlist',
+											onClick: () => removeSongFromPlaylist(playlist),
+											// eslint-disable-next-line no-mixed-spaces-and-tabs
+									  }
+									: null,
+							].filter(Boolean)}
 						/>
-						{isPlaylistsDropdown && (
+						{isPlaylistsDropdown && myPlaylists && (
 							<div
 								onMouseEnter={() => setIsPlaylistsDropdown(true)}
 								onMouseLeave={() => setIsPlaylistsDropdown(false)}
 								className={styles.dropdownPlaylists}
-								ref={playlistsDropdownRef}
 							>
-								<Dropdown elements={dropdownPlaylistsElements} />
+								<Dropdown
+									elements={myPlaylists?.map((play: IPlaylist) => ({
+										title: play.title,
+										onClick: () => addSongToPlaylist(play),
+									}))}
+								/>
 							</div>
 						)}
 					</div>

@@ -29,9 +29,6 @@ export const albumDropdownElements: DropdownProps['elements'] = [
 
 export const avatarDropdownElements: DropdownProps['elements'] = [
 	{
-		title: 'Profile',
-	},
-	{
 		title: 'Log out',
 	},
 ]

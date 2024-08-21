@@ -1,7 +1,7 @@
 import { Query } from 'appwrite'
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Albums from '../../components/albums/Albums'
-import CategoryCard from '../../components/categoryCard/CategoryCard'
 import Playlists from '../../components/playlists/Playlists'
 import {
 	COLLECTIONID_ALBUMS,
@@ -16,19 +16,28 @@ import styles from './home.module.css'
 const Home = () => {
 	const [playlists, setPlaylists] = useState<IPlaylist[]>([])
 	const [albums, setAlbums] = useState<IAlbum[]>([])
+	let [searchParams, setSearchParams] = useSearchParams()
 
 	useEffect(() => {
 		async function fetchData() {
+			console.log(searchParams.get('query') ?? '')
+
 			const albums_data = await databases.listDocuments<IAlbum>(
 				DATABASEID,
 				COLLECTIONID_ALBUMS,
-				[Query.orderDesc('$createdAt')]
+				[
+					Query.orderDesc('$createdAt'),
+					Query.contains('title', searchParams.get('query')?.split(' ') ?? ''),
+				]
 			)
 
 			const playlists_data = await databases.listDocuments<IPlaylist>(
 				DATABASEID,
 				COLLECTIONID_PLAYLISTS,
-				[Query.orderDesc('$createdAt')]
+				[
+					Query.orderDesc('$createdAt'),
+					Query.contains('title', searchParams.get('query')?.split(' ') ?? ''),
+				]
 			)
 
 			setPlaylists(playlists_data.documents)
@@ -36,35 +45,26 @@ const Home = () => {
 		}
 
 		fetchData()
-	}, [])
+	}, [searchParams])
 
 	return (
 		<div className={styles.wrapper}>
-			<h2 className={styles.title}>Browse all</h2>
-			<div className={styles.cards}>
-				<CategoryCard
-					color='#8C1932'
-					src='https://i.scdn.co/image/ab67fb8200005caf3f3de915ef4a9f3eaf242f02'
-					title='Pop'
-				/>
-				<CategoryCard
-					color='#8C1932'
-					src='https://i.scdn.co/image/ab67fb8200005caf3f3de915ef4a9f3eaf242f02'
-					title='Pop'
-				/>
-				<CategoryCard
-					color='#8C1932'
-					src='https://i.scdn.co/image/ab67fb8200005caf3f3de915ef4a9f3eaf242f02'
-					title='Pop'
-				/>
-				<CategoryCard
-					color='#8C1932'
-					src='https://i.scdn.co/image/ab67fb8200005caf3f3de915ef4a9f3eaf242f02'
-					title='Pop'
-				/>
-			</div>
-			<Playlists title='Popular playlists' playlists={playlists} />
-			<Albums title='Popular albums' albums={albums} />
+			<Playlists
+				title={
+					!playlists.length
+						? 'Not found playlists'
+						: `${searchParams.get('query') ? 'Found' : 'Popular'} playlists`
+				}
+				playlists={playlists}
+			/>
+			<Albums
+				title={
+					!albums.length
+						? 'Not found albums'
+						: `${searchParams.get('query') ? 'Found' : 'Popular'} albums`
+				}
+				albums={albums}
+			/>
 		</div>
 	)
 }

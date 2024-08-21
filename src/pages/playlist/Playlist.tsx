@@ -1,13 +1,6 @@
-import { Models } from 'appwrite'
 import { useColor } from 'color-thief-react'
 import { useContext, useEffect, useRef, useState } from 'react'
-import {
-	ActionFunctionArgs,
-	Link,
-	LoaderFunctionArgs,
-	useFetcher,
-	useLoaderData,
-} from 'react-router-dom'
+import { Link, useFetcher, useLoaderData } from 'react-router-dom'
 import { AddIcon } from '../../assets/icons/AddIcon'
 import { ClockIcon } from '../../assets/icons/ClockIcon'
 import { CrossIcon } from '../../assets/icons/CrossIcon'
@@ -17,26 +10,32 @@ import SongList from '../../components/songList/SongList'
 import { PlayButton } from '../../components/ui/button/playButton/PlayButton'
 import { Dropdown } from '../../components/ui/dropdown/Dropdown'
 import { albumDropdownElements } from '../../constants/dropdown'
-import { useAppSelector } from '../../hooks/reduxHooks'
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import {
 	COLLECTIONID_ACCOUNTS,
-	COLLECTIONID_PLAYLISTS,
 	DATABASEID,
 	databases,
 } from '../../lib/appwrite'
 import { useAudio } from '../../providers/AudioProvider'
 import { AuthAlertContext } from '../../providers/AuthAlertProvider'
+import { getCurrent } from '../../store/auth/authActions'
 import { IPlaylist } from '../../types/Playlist'
-import { ITrack } from '../../types/Track'
 import styles from './playlist.module.css'
 
 const Playlist = () => {
 	const playlist = useLoaderData() as IPlaylist
-	const fetcher = useFetcher()
+	// const [playlist, setPlaylist] = useState(useLoaderData() as IPlaylist)
+	const fetcher = useFetcher<IPlaylist>({ key: 'getPlaylist' })
 	const [isFavourite, setIsFavourite] = useState(false)
 	const { setAlert } = useContext(AuthAlertContext)
-	const { currentSong, isPlaying } = useAudio()
-	const [playingStatus, setPlayingStatus] = useState(false)
+	const {
+		currentSong,
+		isPlaying,
+		playAudio,
+		songList,
+		selectAudio,
+		pauseAudio,
+	} = useAudio()
 	const [isOwner, setIsOwner] = useState(false)
 	const { user, account, loading } = useAppSelector(state => state.auth)
 	const { data } = useColor(playlist.imgSrc, 'rgbArray', {
@@ -48,66 +47,48 @@ const Playlist = () => {
 	const modalFormRef = useRef<HTMLFormElement>(null)
 	const modalRef = useRef<HTMLDivElement>(null)
 	const closeRef = useRef<HTMLDivElement>(null)
+	const dispatch = useAppDispatch()
 	const [isModal, setIsModal] = useState(false)
 
 	const handleClickFavourite = async () => {
 		if ((user === null && account === null) || loading) return setAlert(true)
 		if (!account) return
-		if (isFavourite) {
-			let newArrayFavourites = account?.favouritePlaylists?.filter(
-				play => play.$id !== playlist.$id
-			)
 
-			newArrayFavourites = newArrayFavourites?.map(play => play.id)
+		const isAlreadyFavourite = isFavourite && account.favouriteAlbums?.length
 
-			await databases.updateDocument(
-				DATABASEID,
-				COLLECTIONID_ACCOUNTS,
-				account.$id,
-				{
-					favouritePlaylists: newArrayFavourites,
-				}
-			)
-			setIsFavourite(false)
-		} else {
-			const newFavourites = [...(account?.favouriteAlbums ?? []), playlist]
+		const newFavouriteAlbums = isAlreadyFavourite
+			? (account.favouriteAlbums ?? []).filter(alb => alb.$id !== playlist.$id)
+			: [...(account.favouriteAlbums ?? []), playlist]
+		await databases.updateDocument(
+			DATABASEID,
+			COLLECTIONID_ACCOUNTS,
+			account.$id,
+			{
+				favouriteAlbums: newFavouriteAlbums,
+			}
+		)
 
-			await databases.updateDocument(
-				DATABASEID,
-				COLLECTIONID_ACCOUNTS,
-				account.$id,
-				{
-					favouritePlaylists: newFavourites,
-				}
-			)
-			setIsFavourite(true)
-		}
+		setIsFavourite(!isFavourite)
+
+		dispatch(getCurrent())
 	}
 
 	useEffect(() => {
-		const status =
-			isPlaying &&
-			!!playlist.tracks.filter((song: ITrack) => {
-				return song.path === currentSong.src
-			}).length
-
 		const favStatus = !!account?.favouritePlaylists?.find(
 			play => play.$id === playlist.$id
 		)
 
-		setPlayingStatus(status)
 		setIsOwner(playlist.accounts.userId === user?.$id)
 		setIsFavourite(favStatus)
 	}, [
 		isPlaying,
-		setPlayingStatus,
 		playlist.tracks,
 		currentSong.src,
 		setIsOwner,
 		isOwner,
-		playlist.accounts.userId,
 		user?.$id,
 		account?.favouritePlaylists,
+		playlist.$id,
 	])
 
 	const handleClickOutsideDropdown = (event: MouseEvent) => {
@@ -191,7 +172,25 @@ const Playlist = () => {
 				className={styles.downer}
 			>
 				<div className={styles.buttons}>
-					<PlayButton playingStatus={playingStatus} color='green' />
+					<div
+						onClick={() => {
+							if (currentSong.index) {
+								if (isPlaying) {
+									return pauseAudio()
+								}
+								playAudio(currentSong.src)
+							} else {
+								selectAudio(songList[0])
+							}
+						}}
+					>
+						<PlayButton
+							playingStatus={
+								isPlaying && currentSong.playlistId === playlist.$id
+							}
+							color='green'
+						/>
+					</div>
 					{!isOwner && (
 						<div onClick={handleClickFavourite} className={styles.add}>
 							{!isFavourite ? <AddIcon /> : <TickIcon />}
@@ -230,7 +229,7 @@ const Playlist = () => {
 					<div ref={modalRef} className={styles.modal}>
 						<img draggable={false} src={playlist.imgSrc} alt={playlist.title} />
 						<fetcher.Form
-							method='post'
+							method='patch'
 							ref={modalFormRef}
 							onTransitionEnd={() => console.log(123)}
 						>
@@ -261,72 +260,6 @@ const Playlist = () => {
 			)}
 		</div>
 	)
-}
-
-export const playlistLoader = async ({
-	params,
-}: LoaderFunctionArgs<{ playlistId: string }>): Promise<Models.Document> => {
-	const { playlistId } = params
-
-	if (!playlistId) {
-		throw new Error('Album ID is missing')
-	}
-
-	const document = await databases.getDocument(
-		DATABASEID,
-		COLLECTIONID_PLAYLISTS,
-		playlistId
-	)
-
-	return document
-}
-
-export const playlistAction = async ({
-	request,
-	params,
-}: ActionFunctionArgs) => {
-	const { playlistId } = params
-
-	if (!playlistId) throw new Error('Playlist ID is missing')
-	console.log(request)
-
-	if (request.method === 'post') {
-		const formData = await request.formData()
-		const title = formData.get('title') as string
-		const description = formData.get('desc') as string | undefined
-
-		const updatedPlaylist = { title, description }
-
-		const response = await databases.updateDocument(
-			DATABASEID,
-			COLLECTIONID_PLAYLISTS,
-			playlistId,
-			updatedPlaylist
-		)
-
-		if (!response) {
-			throw new Error('Failed to update playlist')
-		}
-
-		return response
-	} else if (request.method === 'delete') {
-		const formData = await request.formData()
-		const trackId = formData.get('trackId') as string
-		const trackIds = formData.get('trackIds')
-		const playlistId = formData.get('playlistId') as string
-
-		const response = await databases.updateDocument(
-			DATABASEID,
-			COLLECTIONID_PLAYLISTS,
-			playlistId
-		)
-
-		if (!response) {
-			throw new Error('Failed to update playlist')
-		}
-
-		return response
-	}
 }
 
 export default Playlist

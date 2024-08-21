@@ -1,23 +1,22 @@
-import { Models } from 'appwrite'
 import { useColor } from 'color-thief-react'
 import { useContext, useEffect, useRef, useState } from 'react'
-import { Link, LoaderFunctionArgs, useLoaderData } from 'react-router-dom'
+import { Link, useLoaderData } from 'react-router-dom'
 import { AddIcon } from '../../assets/icons/AddIcon'
 import { ClockIcon } from '../../assets/icons/ClockIcon'
 import { DotsIcon } from '../../assets/icons/DotsIcon'
 import { TickIcon } from '../../assets/icons/TickIcon'
-import SongList, { SongListProps } from '../../components/songList/SongList'
+import SongList from '../../components/songList/SongList'
 import { PlayButton } from '../../components/ui/button/playButton/PlayButton'
 import { Dropdown } from '../../components/ui/dropdown/Dropdown'
 import { albumDropdownElements } from '../../constants/dropdown'
-import { useAppSelector } from '../../hooks/reduxHooks'
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import {
 	COLLECTIONID_ACCOUNTS,
-	COLLECTIONID_ALBUMS,
 	DATABASEID,
 	databases,
 } from '../../lib/appwrite'
 import { AuthAlertContext } from '../../providers/AuthAlertProvider'
+import { getCurrent } from '../../store/auth/authActions'
 import { IAlbum } from '../../types/Album'
 import { ITrack } from '../../types/Track'
 import styles from './album.module.css'
@@ -33,16 +32,16 @@ export const Album = () => {
 	const dotsIconRef = useRef<HTMLDivElement>(null)
 	const { setAlert } = useContext(AuthAlertContext)
 	const { account, user, loading } = useAppSelector(state => state.auth)
-	const [songs] = useState<SongListProps[]>(
-		album.tracks.map((song: ITrack) => ({
-			title: song.title,
-			author: song.author.name,
-			duration: song.duration,
-			srcImg: album.imgSrc,
-			id: song.id,
-			path: song.path,
-		}))
-	)
+	const dispatch = useAppDispatch()
+	const [songs] = useState<ITrack[]>(album.tracks)
+
+	useEffect(() => {
+		if (!loading && account && album) {
+			setIsFavourite(
+				account.favouriteAlbums?.some(alb => alb.$id === album.$id) ?? false
+			)
+		}
+	}, [loading, account, album])
 
 	const handleClickOutside = (event: MouseEvent) => {
 		if (
@@ -56,35 +55,24 @@ export const Album = () => {
 	const handleClickFavourite = async () => {
 		if ((user === null && account === null) || loading) return setAlert(true)
 		if (!account) return
-		if (isFavourite) {
-			let newArrayFavourites = account?.favouriteAlbums?.filter(
-				alb => alb.$id !== album.$id
-			)
 
-			newArrayFavourites = newArrayFavourites?.map(alb => alb.id)
+		const isAlreadyFavourite = isFavourite && account.favouriteAlbums?.length
 
-			await databases.updateDocument(
-				DATABASEID,
-				COLLECTIONID_ACCOUNTS,
-				account.$id,
-				{
-					favouriteAlbums: newArrayFavourites,
-				}
-			)
-			setIsFavourite(false)
-		} else {
-			const newFavourites = [...(account?.favouriteAlbums ?? []), album]
+		const newFavouriteAlbums = isAlreadyFavourite
+			? (account.favouriteAlbums ?? []).filter(alb => alb.$id !== album.$id)
+			: [...(account.favouriteAlbums ?? []), album]
+		await databases.updateDocument(
+			DATABASEID,
+			COLLECTIONID_ACCOUNTS,
+			account.$id,
+			{
+				favouriteAlbums: newFavouriteAlbums,
+			}
+		)
 
-			await databases.updateDocument(
-				DATABASEID,
-				COLLECTIONID_ACCOUNTS,
-				account.$id,
-				{
-					favouriteAlbums: newFavourites,
-				}
-			)
-			setIsFavourite(true)
-		}
+		setIsFavourite(!isFavourite)
+
+		dispatch(getCurrent())
 	}
 
 	useEffect(() => {
@@ -159,26 +147,8 @@ export const Album = () => {
 						<ClockIcon />
 					</div>
 				</div>
-				<SongList songs={songs} />
+				<SongList album={album} songs={songs} />
 			</div>
 		</div>
 	)
-}
-
-export const albumLoader = async ({
-	params,
-}: LoaderFunctionArgs<{ albumId: string }>): Promise<Models.Document> => {
-	const { albumId } = params
-
-	if (!albumId) {
-		throw new Error('Album ID is missing')
-	}
-
-	const document = await databases.getDocument(
-		DATABASEID,
-		COLLECTIONID_ALBUMS,
-		albumId
-	)
-
-	return document
 }

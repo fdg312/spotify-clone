@@ -4,8 +4,6 @@ import { DropdownProps } from '../../../constants/dropdown'
 import styles from './dropdown.module.css'
 
 export const Dropdown = ({ elements }: DropdownProps) => {
-	console.log(elements[0])
-
 	return (
 		<div onClick={e => e.stopPropagation()} className={styles.dropdown}>
 			<div className={styles.elements}>

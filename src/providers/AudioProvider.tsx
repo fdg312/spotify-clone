@@ -22,6 +22,9 @@ interface IAudioSong {
 	duration: number
 	src: string
 	srcImg: string
+	trackId: string
+	albumId?: string
+	playlistId?: string
 	time?: number
 }
 
@@ -39,6 +42,9 @@ export const AudioContext = createContext<AudioContextProps>({
 		duration: 0,
 		src: '',
 		srcImg: '',
+		trackId: '',
+		albumId: '',
+		playlistId: '',
 		time: 0,
 	},
 	songList: [],
@@ -59,6 +65,9 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
 		src: '',
 		srcImg: '',
 		index: null,
+		trackId: '',
+		albumId: '',
+		playlistId: '',
 		time: 0,
 	})
 
@@ -75,24 +84,33 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
 	}, [audio])
 
 	const playAudio = async (src: string) => {
-		if (audio.src !== src) {
+		if (currentSong.src !== src) {
 			audio.src = `/src/assets/songs/${src}`
+		} else {
+			audio.currentTime = currentSong.time ?? 0
 		}
 		audio.play()
 		setIsPlaying(true)
 	}
 
 	const pauseAudio = () => {
+		console.log(currentSong, 123)
+
 		audio.pause()
 		setIsPlaying(false)
 	}
 
 	const selectAudio = (song: IAudioSong) => {
-		setCurrentSong(song)
+		if (audio.src !== song.src) {
+			audio.src = `/src/assets/songs/${song.src}`
+			setCurrentSong(song)
+		}
+
 		playAudio(song.src)
 	}
 
 	const playNextSong = () => {
+		currentSong.time = 0
 		if (currentSong.index === songList.length) {
 			selectAudio(songList[0])
 		} else {
@@ -101,6 +119,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
 	}
 
 	const playPrevSong = () => {
+		currentSong.time = 0
 		if (currentSong.index === 1) {
 			selectAudio(songList[songList.length - 1])
 		} else {

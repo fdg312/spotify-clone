@@ -2,6 +2,7 @@ import { ID, Permission, Role } from 'appwrite'
 import { useContext } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { MediaLibraryIcon } from '../../assets/icons/MediaLibraryIcon'
+import { PlusIcon } from '../../assets/icons/PlusIcon'
 import { SearchActiveIcon } from '../../assets/icons/SearchActiveIcon'
 import { SearchIcon } from '../../assets/icons/SearchIcon'
 import { SpotifyIcon } from '../../assets/icons/SpotifyIcon'
@@ -21,7 +22,7 @@ const Aside = () => {
 	const { setAlert } = useContext(AuthAlertContext)
 	const { error, loading, user, account } = useAppSelector(state => state.auth)
 
-	const handleClick = async () => {
+	const handleClickCreatePLaylist = async () => {
 		if (error === null && !loading && user !== null) {
 			const playlists = await databases.listDocuments(
 				DATABASEID,
@@ -67,8 +68,13 @@ const Aside = () => {
 			</div>
 			<div className={styles.medialibrary_div}>
 				<div className={styles.medialibrary_link}>
-					<MediaLibraryIcon />
-					<span>Your Library</span>
+					<div className={styles.inner_div}>
+						<MediaLibraryIcon />
+						<span>Your Library</span>
+					</div>
+					<div onClick={handleClickCreatePLaylist} className={styles.plus}>
+						<PlusIcon />
+					</div>
 				</div>
 			</div>
 			{account?.favouriteAlbums ||
@@ -84,6 +90,24 @@ const Aside = () => {
 							id={playlist.$id}
 						/>
 					))}
+					{account?.favouriteAlbums?.map(playlist => (
+						<LibraryCard
+							key={playlist.$id}
+							title={playlist.title}
+							src={playlist.imgSrc}
+							author={playlist.author}
+							id={playlist.$id}
+						/>
+					))}
+					{account?.favouritePlaylists?.map(playlist => (
+						<LibraryCard
+							key={playlist.$id}
+							title={playlist.title}
+							src={playlist.imgSrc}
+							account={playlist.accounts}
+							id={playlist.$id}
+						/>
+					))}
 				</div>
 			) : (
 				<div className={styles.createplaylist_div}>
@@ -91,7 +115,7 @@ const Aside = () => {
 						<p className={styles.title}>Create your first playlist</p>
 						<p className={styles.desc}>It`s easy, we`ll help you</p>
 					</div>
-					<button onClick={handleClick} className={styles.btn}>
+					<button onClick={handleClickCreatePLaylist} className={styles.btn}>
 						Create playlist
 					</button>
 				</div>

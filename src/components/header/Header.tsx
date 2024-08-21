@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { SearchInputIcon } from '../../assets/icons/SearchInputIcon'
 import { avatarDropdownElements } from '../../constants/dropdown'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
@@ -11,6 +11,7 @@ import styles from './header.module.css'
 const Header = () => {
 	const [inputValue, setInputValue] = useState('')
 	const [isDropdown, setIsDropdown] = useState(false)
+	let [searchParams, setSearchParams] = useSearchParams()
 	const dropdownRef = useRef<HTMLDivElement>(null)
 	const avatarRef = useRef<HTMLDivElement>(null)
 	const location = useLocation()
@@ -45,16 +46,30 @@ const Header = () => {
 		}
 	}, [isDropdown])
 
+	const handleEnterClickOnInput = (
+		e: React.KeyboardEvent<HTMLInputElement>
+	) => {
+		if (e.key === 'Enter') {
+			setSearchParams({
+				query: inputValue,
+			})
+		}
+	}
+
 	return (
 		<header className={styles.header + ' ' + styles.header}>
 			<div>
 				{location.pathname === '/' && (
 					<MyInput
 						type='text'
-						placeholder='What do you want to play?'
+						placeholder='Type and click "Enter"'
 						value={inputValue}
-						onChange={e => setInputValue(e.target.value)}
+						onChange={e => {
+							setInputValue(e.target.value)
+							setSearchParams({ query: '' })
+						}}
 						reset={() => setInputValue('')}
+						onKeyDown={handleEnterClickOnInput}
 						svgIcon={<SearchInputIcon />}
 					/>
 				)}

@@ -88,15 +88,28 @@
 	border-radius: 10px;
 	background-color: var(--bg-dark);
 	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
-.medialibrary_link:hover,
-.medialibrary_link.active {
-	color: white;
+.inner_div {
+	gap: 10px;
+	display: flex;
 }
 
-.medialibrary_link:hover > svg,
-.medialibrary_link.active > svg {
+.medialibrary_link {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.medialibrary_link svg:hover {
+	fill: var(--text-grey);
+}
+
+.plus svg:hover {
 	fill: white;
 }
 
