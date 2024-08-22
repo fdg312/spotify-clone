@@ -17,11 +17,11 @@ const Home = () => {
 	const [playlists, setPlaylists] = useState<IPlaylist[]>([])
 	const [albums, setAlbums] = useState<IAlbum[]>([])
 	let [searchParams] = useSearchParams()
+	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
 		async function fetchData() {
-			console.log(searchParams.get('query') ?? '')
-
+			setLoading(true)
 			const albums_data = await databases.listDocuments<IAlbum>(
 				DATABASEID,
 				COLLECTIONID_ALBUMS,
@@ -45,13 +45,16 @@ const Home = () => {
 		}
 
 		fetchData()
+		setLoading(true)
 	}, [searchParams])
 
 	return (
 		<div className={styles.wrapper}>
 			<Playlists
 				title={
-					!playlists.length
+					loading
+						? 'Loading...'
+						: !playlists.length
 						? 'Not found playlists'
 						: `${searchParams.get('query') ? 'Found' : 'Popular'} playlists`
 				}
@@ -59,7 +62,9 @@ const Home = () => {
 			/>
 			<Albums
 				title={
-					!albums.length
+					loading
+						? 'Loading...'
+						: !albums.length
 						? 'Not found albums'
 						: `${searchParams.get('query') ? 'Found' : 'Popular'} albums`
 				}
