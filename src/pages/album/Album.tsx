@@ -15,6 +15,7 @@ import {
 	DATABASEID,
 	databases,
 } from '../../lib/appwrite'
+import { useAudio } from '../../providers/AudioProvider'
 import { AuthAlertContext } from '../../providers/AuthAlertProvider'
 import { getCurrent } from '../../store/auth/authActions'
 import { IAlbum } from '../../types/Album'
@@ -34,6 +35,14 @@ export const Album = () => {
 	const { account, user, loading } = useAppSelector(state => state.auth)
 	const dispatch = useAppDispatch()
 	const [songs] = useState<ITrack[]>(album.tracks)
+	const {
+		isPlaying,
+		currentSong,
+		selectAudio,
+		playAudio,
+		songList,
+		pauseAudio,
+	} = useAudio()
 
 	useEffect(() => {
 		if (!loading && account && album) {
@@ -118,7 +127,23 @@ export const Album = () => {
 				className={styles.downer}
 			>
 				<div className={styles.buttons}>
-					<PlayButton color='green' />
+					<div
+						onClick={() => {
+							if (currentSong.index) {
+								if (isPlaying) {
+									return pauseAudio()
+								}
+								playAudio(currentSong.src)
+							} else {
+								selectAudio(songList[0])
+							}
+						}}
+					>
+						<PlayButton
+							playingStatus={isPlaying && currentSong.albumId === album.$id}
+							color='green'
+						/>
+					</div>
 					<div onClick={handleClickFavourite} className={styles.add}>
 						{!isFavourite ? <AddIcon /> : <TickIcon />}
 					</div>
