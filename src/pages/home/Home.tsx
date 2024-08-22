@@ -41,34 +41,38 @@ const Home = () => {
 
 			setPlaylists(playlists_data.documents)
 			setAlbums(albums_data.documents)
+			setLoading(false)
 		}
 
 		fetchData()
-		setLoading(false)
 	}, [searchParams])
 
 	return (
 		<div className={styles.wrapper}>
-			<Playlists
-				title={
-					loading
-						? 'Loading...'
-						: !playlists.length
-						? 'Not found playlists'
-						: `${searchParams.get('query') ? 'Found' : 'Popular'} playlists`
-				}
-				playlists={playlists}
-			/>
-			<Albums
-				title={
-					loading
-						? 'Loading...'
-						: !albums.length
-						? 'Not found albums'
-						: `${searchParams.get('query') ? 'Found' : 'Popular'} albums`
-				}
-				albums={albums}
-			/>
+			{loading ? (
+				<h2>Loading...</h2>
+			) : (
+				<Playlists
+					title={
+						!playlists.length
+							? 'Not found playlists'
+							: `${searchParams.get('query') ? 'Found' : 'Popular'} playlists`
+					}
+					playlists={playlists}
+				/>
+			)}
+			{loading ? (
+				<h2>Loading...</h2>
+			) : (
+				<Albums
+					title={
+						!albums.length
+							? 'Not found albums'
+							: `${searchParams.get('query') ? 'Found' : 'Popular'} albums`
+					}
+					albums={albums}
+				/>
+			)}
 		</div>
 	)
 }
