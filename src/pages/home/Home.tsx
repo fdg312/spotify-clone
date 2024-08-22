@@ -16,7 +16,7 @@ import styles from './home.module.css'
 const Home = () => {
 	const [playlists, setPlaylists] = useState<IPlaylist[]>([])
 	const [albums, setAlbums] = useState<IAlbum[]>([])
-	let [searchParams, setSearchParams] = useSearchParams()
+	let [searchParams] = useSearchParams()
 
 	useEffect(() => {
 		async function fetchData() {

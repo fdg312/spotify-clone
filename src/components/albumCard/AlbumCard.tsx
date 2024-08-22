@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useAudio } from '../../providers/AudioProvider'
 import { PlayButton } from '../ui/button/playButton/PlayButton'
 import styles from './albumcard.module.css'
 
@@ -13,6 +14,15 @@ const AlbumCard = ({
 	author: string
 	id: string
 }) => {
+	const {
+		isPlaying,
+		pauseAudio,
+		currentSong,
+		playAudio,
+		selectAudio,
+		songList,
+	} = useAudio()
+
 	return (
 		<Link
 			// style={{ textDecoration: 'none', color: 'inherit' }}
@@ -25,7 +35,23 @@ const AlbumCard = ({
 				<p className={styles.author}>{author}</p>
 			</div>
 			<div className={styles.btn_div}>
-				<PlayButton color={'green'} />
+				<div
+					onClick={() => {
+						if (currentSong.index) {
+							if (isPlaying) {
+								return pauseAudio()
+							}
+							playAudio(currentSong.src)
+						} else {
+							selectAudio(songList[0])
+						}
+					}}
+				>
+					<PlayButton
+						playingStatus={isPlaying && currentSong.albumId === id}
+						color='green'
+					/>
+				</div>
 			</div>
 		</Link>
 	)
