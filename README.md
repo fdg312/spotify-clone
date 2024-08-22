@@ -1,9 +1,5 @@
 Link: https://spotify-clone-navy-eight.vercel.app
 
-## TODO
-
-* create
-
 <<<<<<< HEAD
 
 # React + TypeScript + Vite
