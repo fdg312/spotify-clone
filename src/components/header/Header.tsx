@@ -11,7 +11,7 @@ import styles from './header.module.css'
 const Header = () => {
 	const [inputValue, setInputValue] = useState('')
 	const [isDropdown, setIsDropdown] = useState(false)
-	let [searchParams, setSearchParams] = useSearchParams()
+	const [_, setSearchParams] = useSearchParams()
 	const dropdownRef = useRef<HTMLDivElement>(null)
 	const avatarRef = useRef<HTMLDivElement>(null)
 	const location = useLocation()

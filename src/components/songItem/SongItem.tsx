@@ -9,6 +9,7 @@ import {
 import { useFetcher, useLocation } from 'react-router-dom'
 import { PauseIcon } from '../../assets/icons/PauseIcon'
 import { PlayIcon } from '../../assets/icons/PlayIcon'
+import { DropdownProps } from '../../constants/dropdown'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import {
 	COLLECTIONID_PLAYLISTS,
@@ -239,21 +240,23 @@ const SongItem = ({
 				>
 					<div className={styles.dropdown}>
 						<Dropdown
-							elements={[
-								{
-									title: 'Add to playlist',
-									arrowIcon: true,
-									onMouseEnter: () => setIsPlaylistsDropdown(true),
-									onMouseLeave: () => setIsPlaylistsDropdown(false),
-								},
-								isOwner
-									? {
-											title: 'Remove from this playlist',
-											onClick: () => removeSongFromPlaylist(playlist),
-											// eslint-disable-next-line no-mixed-spaces-and-tabs
-									  }
-									: null,
-							].filter(Boolean)}
+							elements={
+								[
+									{
+										title: 'Add to playlist',
+										arrowIcon: true,
+										onMouseEnter: () => setIsPlaylistsDropdown(true),
+										onMouseLeave: () => setIsPlaylistsDropdown(false),
+									},
+									isOwner
+										? {
+												title: 'Remove from this playlist',
+												onClick: () => removeSongFromPlaylist(playlist),
+												// eslint-disable-next-line no-mixed-spaces-and-tabs
+										  }
+										: null,
+								].filter(Boolean) as DropdownProps['elements']
+							}
 						/>
 						{isPlaylistsDropdown && myPlaylists && (
 							<div
