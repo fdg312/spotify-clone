@@ -17,11 +17,10 @@ const Home = () => {
 	const [playlists, setPlaylists] = useState<IPlaylist[]>([])
 	const [albums, setAlbums] = useState<IAlbum[]>([])
 	let [searchParams] = useSearchParams()
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
 		async function fetchData() {
-			setLoading(true)
 			const albums_data = await databases.listDocuments<IAlbum>(
 				DATABASEID,
 				COLLECTIONID_ALBUMS,
