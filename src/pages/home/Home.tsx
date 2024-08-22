@@ -45,7 +45,7 @@ const Home = () => {
 		}
 
 		fetchData()
-		setLoading(true)
+		setLoading(false)
 	}, [searchParams])
 
 	return (
