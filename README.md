@@ -1,8 +1,8 @@
 Link: https://spotify-clone-navy-eight.vercel.app
 
-## TODOS
+## TODO
 
-- [ ] create
+- [+] create
 
 <<<<<<< HEAD
 
